@@ -23,6 +23,7 @@ func main() {
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
+		AllowAllOrigins:  true,
 	}))
 
 	r.POST("/signup", controllers.SignUp)
