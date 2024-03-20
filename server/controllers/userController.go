@@ -16,6 +16,7 @@ func SignUp(c *gin.Context) {
 	var body struct {
 		Email    string
 		Password string
+		Username string
 	}
 
 	if c.Bind(&body) != nil {
@@ -34,7 +35,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 	//create a user
-	user := models.User{Email: body.Email, Password: string(hash)}
+	user := models.User{Email: body.Email, Username: body.Username, Password: string(hash)}
 	result := initializers.DB.Create(&user)
 
 	if result.Error != nil {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"server/controllers"
 	"server/initializers"
 	"server/middleware"
@@ -20,5 +21,5 @@ func main() {
 	r.POST("/login", controllers.Login)
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 
-	r.Run()
+	log.Fatal(r.Run())
 }
