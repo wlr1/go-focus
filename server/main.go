@@ -18,13 +18,7 @@ func init() {
 func main() {
 	r := gin.Default()
 
-	r.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "DELETE"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		AllowAllOrigins:  true,
-	}))
+	r.Use(cors.Default())
 
 	r.POST("/signup", controllers.SignUp)
 	r.POST("/login", controllers.Login)
