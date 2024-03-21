@@ -95,10 +95,14 @@ func Login(c *gin.Context) {
 		return
 	}
 	//send it back
-	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("auth", tokenString, 3600*24*30, "", "", false, true)
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "jwt",
+		Value:    tokenString,
+		HttpOnly: true,
+		MaxAge:   int(30 * 24 * time.Hour),
+	})
 
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
 func Validate(c *gin.Context) {
