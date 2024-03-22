@@ -22,9 +22,6 @@ const SignIn = () => {
         email,
         password,
       });
-
-      console.log(response.data);
-
       navigate("/notes");
     } catch (error: any) {
       console.error("Signup Error:", error);

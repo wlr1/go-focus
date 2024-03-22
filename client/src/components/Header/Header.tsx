@@ -1,11 +1,45 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [username, setUsername] = useState("");
+
+  const baseUrl = "http://localhost:8000";
+  const navigate = useNavigate();
+
+  axios.defaults.withCredentials = true;
 
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
+
+  const LogoutUser = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.get(`${baseUrl}/logout`);
+      navigate("/login");
+    } catch (error: any) {
+      console.log("Logout error: ", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/validate`, {
+          withCredentials: true, // Include cookies in the request
+        });
+        setUsername(response.data.message.username); // Assuming username is a field in the user object
+      } catch (error) {
+        // Handle error
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <header className="w-full flex justify-between items-center p-4 bg-gray-700 text-white">
@@ -28,7 +62,7 @@ const Header = () => {
                     alt=""
                     className="w-12 rounded-m mr-1 "
                   />
-                  <h2 className="font-bold m-auto">jj</h2>
+                  <h2 className="font-bold m-auto">{username}</h2>
                 </li>
                 <hr className="w-full bg-black h-[1px] border-0 mt-[15px] mb-[10px]"></hr>
                 <li className="flex text-center ">
@@ -64,8 +98,8 @@ const Header = () => {
                     className="w-6 mr-2 "
                   />
                   <a
-                    href="#"
-                    className="hover:transition-all hover:translate-x-1 hover:font-semibold"
+                    onClick={LogoutUser}
+                    className="hover:transition-all hover:translate-x-1 hover:font-semibold cursor-pointer"
                   >
                     Logout
                   </a>
