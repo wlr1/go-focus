@@ -12,7 +12,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const baseUrl = "http://localhost:8000";
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {

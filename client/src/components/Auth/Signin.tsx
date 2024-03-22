@@ -14,7 +14,7 @@ const SignIn = () => {
 
   axios.defaults.withCredentials = true;
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -25,13 +25,13 @@ const SignIn = () => {
 
       toast.loading("Success! Redirecting...", {
         theme: "dark",
-        autoClose: 2000,
+        autoClose: 1000,
       });
 
       setTimeout(() => {
         navigate("/notes");
         toast.dismiss();
-      }, 3000);
+      }, 2000);
     } catch (error: any) {
       toast.error("Invalid email or password", {
         theme: "dark",

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -15,12 +16,24 @@ const Header = () => {
     setIsDropDownOpen(!isDropDownOpen);
   };
 
-  const LogoutUser = async (e) => {
+  const LogoutUser: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
     try {
       await axios.get(`${baseUrl}/logout`);
-      navigate("/login");
+
+      toast.loading("Success! Redirecting...", {
+        theme: "dark",
+        autoClose: 1000,
+      });
+      setTimeout(() => {
+        navigate("/login");
+        toast.dismiss();
+      }, 2000);
     } catch (error: any) {
+      toast.error("Logout error", {
+        theme: "dark",
+        autoClose: 5000,
+      });
       console.log("Logout error: ", error);
     }
   };
