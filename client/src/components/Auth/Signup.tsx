@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useState, useLayoutEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [isFormAnimation, setIsFormAnimation] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const baseUrl = "http://localhost:8000";
@@ -25,11 +25,20 @@ const SignUp = () => {
         navigate("/login");
       }
     } catch (error: any) {
-      console.error("Signup Error:", error);
+      toast.error("Signup error", {
+        theme: "dark",
+        autoClose: 5000,
+      });
       if (error.response && error.response.data && error.response.data.error) {
-        setError(error.response.data.error);
+        toast.error(error.response.data.error, {
+          theme: "dark",
+          autoClose: 5000,
+        });
       } else {
-        setError("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.", {
+          theme: "dark",
+          autoClose: 5000,
+        });
       }
     }
   };
@@ -107,8 +116,6 @@ const SignUp = () => {
               required
             />
           </div>
-
-          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           <button
             type="submit"

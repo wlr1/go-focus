@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [isFormAnimation, setIsFormAnimation] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
 
   const baseUrl = "http://localhost:8000";
 
@@ -18,14 +18,25 @@ const SignIn = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${baseUrl}/login`, {
+      await axios.post(`${baseUrl}/login`, {
         email,
         password,
       });
-      navigate("/notes");
+
+      toast.loading("Success! Redirecting...", {
+        theme: "dark",
+        autoClose: 2000,
+      });
+
+      setTimeout(() => {
+        navigate("/notes");
+        toast.dismiss();
+      }, 3000);
     } catch (error: any) {
-      console.error("Signup Error:", error);
-      setError(error.response.data.error);
+      toast.error("Invalid email or password", {
+        theme: "dark",
+        autoClose: 5000,
+      });
     }
   };
 
@@ -82,8 +93,6 @@ const SignIn = () => {
               required
             />
           </div>
-
-          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           <button
             type="submit"
