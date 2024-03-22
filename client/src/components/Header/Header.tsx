@@ -31,7 +31,8 @@ const Header = () => {
         const response = await axios.get(`${baseUrl}/validate`, {
           withCredentials: true, // Include cookies in the request
         });
-        setUsername(response.data.message.username); // Assuming username is a field in the user object
+        console.log(response.data);
+        setUsername(response.data.message.Username);
       } catch (error) {
         // Handle error
         console.error("Error fetching user data:", error);
