@@ -99,10 +99,10 @@ func Login(c *gin.Context) {
 		Name:     "jwt",
 		Value:    tokenString,
 		HttpOnly: true,
-		MaxAge:   int(30 * 24 * time.Hour),
+		MaxAge:   int((time.Hour * 24 * 30).Seconds()),
 	})
 
-	c.JSON(http.StatusOK, gin.H{"user": user})
+	c.JSON(http.StatusOK, gin.H{})
 }
 
 func Validate(c *gin.Context) {
@@ -110,5 +110,14 @@ func Validate(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": user,
+	})
+}
+
+func Logout(c *gin.Context) {
+	// Delete the JWT cookie
+	c.SetCookie("jwt", "", -1, "/", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logged out successfully",
 	})
 }
