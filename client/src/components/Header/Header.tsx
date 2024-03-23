@@ -2,9 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import ProfileMenu from "./Profile/ProfileMenu";
 
 const Header = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   const [username, setUsername] = useState("");
 
   const baseUrl = "http://localhost:8000";
@@ -14,9 +17,14 @@ const Header = () => {
 
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
+    setIsProfileOpen(false);
   };
 
-  const LogoutUser: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
+
+  const LogoutUser: React.MouseEventHandler<HTMLAnchorElement> = async (e) => {
     e.preventDefault();
     try {
       await axios.get(`${baseUrl}/logout`);
@@ -29,12 +37,11 @@ const Header = () => {
         navigate("/login");
         toast.dismiss();
       }, 2000);
-    } catch (error: any) {
+    } catch (error) {
       toast.error("Logout error", {
         theme: "dark",
         autoClose: 5000,
       });
-      console.log("Logout error: ", error);
     }
   };
 
@@ -42,13 +49,15 @@ const Header = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`${baseUrl}/validate`, {
-          withCredentials: true, // Include cookies in the request
+          withCredentials: true,
         });
-        console.log(response.data);
+
         setUsername(response.data.message.Username);
       } catch (error) {
-        // Handle error
-        console.error("Error fetching user data:", error);
+        toast.error("Error fetching data", {
+          theme: "dark",
+          autoClose: 5000,
+        });
       }
     };
 
@@ -56,7 +65,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="w-full flex justify-between items-center p-4 bg-gray-700 text-white">
+    <header className="w-full h-[66px] flex justify-between items-center p-4 bg-gray-700 text-white">
       <h1 className="font-bold text-xl">noteXs</h1>
       <nav>
         <img
@@ -67,7 +76,7 @@ const Header = () => {
         />
 
         {isDropDownOpen && (
-          <div className="absolute top-20 right-6 w-[190px] bg-white shadow-md p-4 rounded-md">
+          <div className="fade-in absolute top-20 right-6 w-[190px] bg-white shadow-md p-4 rounded-md">
             <div>
               <ul className="text-black">
                 <li className="flex">
@@ -86,8 +95,8 @@ const Header = () => {
                     className="w-6 mr-2"
                   />
                   <a
-                    href="#"
-                    className="hover:transition-all hover:translate-x-1 hover:font-semibold"
+                    onClick={toggleProfile}
+                    className="hover:transition-all hover:translate-x-1 hover:font-semibold cursor-pointer"
                   >
                     Profile
                   </a>
@@ -122,6 +131,7 @@ const Header = () => {
             </div>
           </div>
         )}
+        {isProfileOpen && <ProfileMenu />}
       </nav>
     </header>
   );

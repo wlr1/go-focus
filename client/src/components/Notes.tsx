@@ -2,9 +2,14 @@ import Header from "./Header/Header";
 
 const Notes = () => {
   return (
-    <div>
+    <>
       <Header />
-    </div>
+      <div className="">
+        <div className="">
+          <span>Notes content</span>
+        </div>
+      </div>
+    </>
   );
 };
 

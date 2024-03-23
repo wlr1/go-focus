@@ -32,7 +32,7 @@ const SignIn = () => {
         navigate("/notes");
         toast.dismiss();
       }, 2000);
-    } catch (error: any) {
+    } catch (error) {
       toast.error("Invalid email or password", {
         theme: "dark",
         autoClose: 5000,
