@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ProfileMenu from "./Profile/ProfileMenu";
+import { FaUserEdit } from "react-icons/fa";
+import { RiSettings4Fill } from "react-icons/ri";
+import { IoLogOutSharp } from "react-icons/io5";
 
 const Header = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
@@ -89,11 +92,7 @@ const Header = () => {
                 </li>
                 <hr className="w-full bg-black h-[1px] border-0 mt-[15px] mb-[10px]"></hr>
                 <li className="flex text-center ">
-                  <img
-                    src="/assets/img/profile.png"
-                    alt="profile_img"
-                    className="w-6 mr-2"
-                  />
+                  <FaUserEdit size={21} className="mr-2" />
                   <a
                     onClick={toggleProfile}
                     className="hover:transition-all hover:translate-x-1 hover:font-semibold cursor-pointer"
@@ -102,11 +101,7 @@ const Header = () => {
                   </a>
                 </li>
                 <li className="flex text-center">
-                  <img
-                    src="/assets/img/setting.png"
-                    alt="settings_img"
-                    className="w-6 mr-2"
-                  />
+                  <RiSettings4Fill size={21} className="mr-2" />
                   <a
                     href="#"
                     className="hover:transition-all hover:translate-x-1 hover:font-semibold"
@@ -115,11 +110,7 @@ const Header = () => {
                   </a>
                 </li>
                 <li className="flex text-center ">
-                  <img
-                    src="/assets/img/logout.png"
-                    alt="logout_img"
-                    className="w-6 mr-2 "
-                  />
+                  <IoLogOutSharp size={21} className="mr-2" />
                   <a
                     onClick={LogoutUser}
                     className="hover:transition-all hover:translate-x-1 hover:font-semibold cursor-pointer"
