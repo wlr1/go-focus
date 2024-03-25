@@ -1,14 +1,25 @@
+import { useEffect, useState } from "react";
 import { FiEdit3 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 const StartPage = () => {
+  const [Animation, setAnimation] = useState(false);
+
+  useEffect(() => {
+    setAnimation(!Animation);
+  }, []);
+
   return (
     <div className="h-screen flex items-center justify-center bg-bgmain  bg-cover bg-center relative">
       <div
-        className={"absolute inset-0 bg-opacity-50 backdrop-blur-md"}
+        className="absolute inset-0 bg-opacity-50 backdrop-blur-md"
         style={{ backdropFilter: "blur(11px)" }}
       ></div>
-      <div className="bg-white shadow-lg rounded-lg p-8 opacity-90">
+      <div
+        className={`bg-white shadow-lg shadow-blue-500 rounded-lg p-8 bg-opacity-90 ${
+          Animation ? "fade-start" : ""
+        }`}
+      >
         <div className="flex items-center justify-center mb-4">
           <FiEdit3 className="text-4xl text-blue-500 mr-2" />
           <h1 className="text-4xl font-bold">Notes App</h1>

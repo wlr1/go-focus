@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  overflow: hidden;
+}
+
 @keyframes slideUp {
   from {
     transform: translateX(-300%);
@@ -26,4 +30,17 @@
 
 .fade-in {
   animation: fade 0.3s ease-in-out forwards;
+}
+
+@keyframes fade2 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-start {
+  animation: fade2 1s ease-in-out forwards;
 }

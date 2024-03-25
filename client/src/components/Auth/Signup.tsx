@@ -52,7 +52,7 @@ const SignUp = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-bgmain bg-cover bg-center">
+    <div className="flex items-center justify-center h-screen bg-auth bg-cover bg-center">
       <div
         className={"absolute inset-0 bg-opacity-50 backdrop-blur-md"}
         style={{ backdropFilter: "blur(11px)" }}
