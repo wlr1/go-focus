@@ -6,6 +6,10 @@ export default {
       colors: {
         darkpal: "#D8D9DA",
       },
+      backgroundImage: {
+        bgmain:
+          'url("https://images.hdqwalls.com/download/xiaomi-mi-gaming-laptop-abstract-4k-hl-1920x1080.jpg")',
+      },
     },
   },
   plugins: [],

@@ -45,17 +45,13 @@ const SignIn = () => {
   }, []);
 
   return (
-    <div
-      className="flex items-center justify-center h-screen overflow-hidden"
-      style={{
-        backgroundImage:
-          'url("https://images.hdqwalls.com/download/xiaomi-mi-gaming-laptop-abstract-4k-hl-1920x1080.jpg")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="flex  items-center justify-center h-screen overflow-hidden bg-bgmain  bg-cover bg-center relative">
       <div
-        className={`bg-white p-8 rounded-md shadow-xl w-96 ${
+        className={"absolute inset-0 bg-opacity-50 backdrop-blur-md"}
+        style={{ backdropFilter: "blur(11px)" }}
+      ></div>
+      <div
+        className={`bg-white p-8 rounded-md shadow-xl w-96 relative bg-opacity-80  ${
           isFormAnimation ? "slideUp" : ""
         }`}
       >
