@@ -72,7 +72,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="w-full h-[66px] flex justify-between items-center p-4 bg-gray-700 text-white">
+    <header className="w-1/2 h-[66px] flex justify-between items-center p-4 mt-6 mx-auto bg-gray-700 text-white rounded-2xl bg-opacity-80">
       <h1 className="font-bold text-xl">noteXs</h1>
       <nav>
         <img
@@ -83,7 +83,7 @@ const Header = () => {
         />
 
         {isDropDownOpen && (
-          <div className="fade-in absolute top-20 right-6 w-[190px] bg-white shadow-md p-4 rounded-md">
+          <div className="fade-in absolute top-[111px] right-[420px] w-[190px] bg-white shadow-md p-4 rounded-md">
             <div>
               <ul className="text-black">
                 <li className="flex">
