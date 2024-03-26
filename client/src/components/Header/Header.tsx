@@ -27,6 +27,10 @@ const Header = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
+  const closeProfile = () => {
+    setIsProfileOpen(false);
+  };
+
   const LogoutUser: React.MouseEventHandler<HTMLAnchorElement> = async (e) => {
     e.preventDefault();
     try {
@@ -122,7 +126,7 @@ const Header = () => {
             </div>
           </div>
         )}
-        {isProfileOpen && <ProfileMenu />}
+        {isProfileOpen && <ProfileMenu onClose={closeProfile} />}
       </nav>
     </header>
   );
