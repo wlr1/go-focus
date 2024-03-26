@@ -72,7 +72,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="w-1/2 h-[66px] flex justify-between items-center p-4 mt-6 mx-auto bg-gray-700 text-white rounded-2xl bg-opacity-80">
+    <header className="w-1/2 h-[66px] flex justify-between items-center p-4 mt-4 mx-auto bg-gray-700 text-white rounded-2xl bg-opacity-80">
       <h1 className="font-bold text-xl">noteXs</h1>
       <nav>
         <img

@@ -44,3 +44,35 @@ body {
 .fade-start {
   animation: fade2 1s ease-in-out forwards;
 }
+
+.animated-container {
+  animation-duration: 0.5s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards; /* Maintain the final state after animation */
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-130%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.slideDown {
+  animation: slideDown 0.7s ease-in-out;
+}
+
+@keyframes slideTop {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-300%);
+  }
+}
+
+.slideTop {
+  animation: slideTop 0.5s ease-in-out;
+}
