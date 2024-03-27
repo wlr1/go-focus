@@ -121,3 +121,37 @@ func Logout(c *gin.Context) {
 		"message": "Logged out successfully",
 	})
 }
+
+func UpdateUsername(c *gin.Context) {
+	//get the user from context
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
+
+	//get the new username from the req body
+
+	var body struct {
+		Username string
+	}
+
+	if c.Bind(&body) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
+	}
+
+	//update the username in the db
+
+	currentUser.Username = body.Username
+	result := initializers.DB.Save(&currentUser)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to update username",
+		})
+		return
+	}
+
+	//respond with success
+	c.JSON(http.StatusOK, gin.H{})
+}

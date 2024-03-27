@@ -20,7 +20,10 @@ func main() {
 	r := gin.Default()
 
 	r.ForwardedByClientIP = true
-	r.SetTrustedProxies([]string{"127.0.0.1"})
+	err := r.SetTrustedProxies([]string{"127.0.0.1"})
+	if err != nil {
+		return
+	}
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:8000", "http://localhost:5173"},
@@ -35,6 +38,7 @@ func main() {
 	r.POST("/login", controllers.Login)
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 	r.GET("/logout", middleware.RequireAuth, controllers.Logout)
+	r.PUT("/update-user", middleware.RequireAuth, controllers.UpdateUsername)
 
 	log.Fatal(r.Run())
 }
