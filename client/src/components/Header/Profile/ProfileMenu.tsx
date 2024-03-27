@@ -22,12 +22,12 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
 
       toast.success("Username updated successfully", {
         theme: "dark",
-        autoClose: 5000,
+        autoClose: 3000,
       });
     } catch (error) {
       toast.error("Cannot update username", {
         theme: "dark",
-        autoClose: 5000,
+        autoClose: 3000,
       });
     }
   };
