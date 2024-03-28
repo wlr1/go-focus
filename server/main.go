@@ -39,6 +39,7 @@ func main() {
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 	r.GET("/logout", middleware.RequireAuth, controllers.Logout)
 	r.PUT("/update-user", middleware.RequireAuth, controllers.UpdateUsername)
+	r.PUT("/update-password", middleware.RequireAuth, controllers.UpdatePassword)
 
 	log.Fatal(r.Run())
 }

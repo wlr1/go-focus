@@ -155,3 +155,43 @@ func UpdateUsername(c *gin.Context) {
 	//respond with success
 	c.JSON(http.StatusOK, gin.H{})
 }
+
+func UpdatePassword(c *gin.Context) {
+	//get the authenticated user from the context
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
+
+	//parse the req body to get the new pass
+	var body struct {
+		NewPassword string
+	}
+
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
+	}
+
+	//hash the new pass
+	hash, err := bcrypt.GenerateFromPassword([]byte(body.NewPassword), 10)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to hash password",
+		})
+		return
+	}
+
+	//update the users pass in db
+	currentUser.Password = string(hash)
+	result := initializers.DB.Save(&currentUser)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to update password",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Password updated successfully",
+	})
+}
