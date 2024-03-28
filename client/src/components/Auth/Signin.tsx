@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -50,6 +51,13 @@ const SignIn = () => {
         className={"absolute inset-0 bg-opacity-50 backdrop-blur-md"}
         style={{ backdropFilter: "blur(11px)" }}
       ></div>
+
+      {/*navigate to startpage*/}
+      <Link
+        to="/"
+        className="absolute left-0 h-screen flex justify-center items-center w-[111px] pr-12 hover:bg-gray-500 hover:bg-opacity-55 cursor-pointer"
+      ></Link>
+
       <div
         className={`bg-white p-8 rounded-md shadow-xl w-96 relative bg-opacity-80  ${
           isFormAnimation ? "slideUp" : ""

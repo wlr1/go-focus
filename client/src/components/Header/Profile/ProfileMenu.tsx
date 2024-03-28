@@ -11,6 +11,8 @@ const baseUrl = "http://localhost:8000";
 
 const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
   const [newUsername, setNewUsername] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confirmNewPass, setConfirmNewPass] = useState("");
 
   const handleUpdateUsername = async () => {
     try {
@@ -26,6 +28,34 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
       });
     } catch (error) {
       toast.error("Cannot update username", {
+        theme: "dark",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  const handleUpdatePass = async () => {
+    if (newPass !== confirmNewPass) {
+      toast.error("Passwords do not match!", {
+        theme: "dark",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    try {
+      await axios.put(
+        `${baseUrl}/update-password`,
+        { NewPassword: newPass },
+        { withCredentials: true }
+      );
+
+      toast.success("Password updated successfully", {
+        theme: "dark",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      toast.error("Cannot update password", {
         theme: "dark",
         autoClose: 3000,
       });
@@ -65,6 +95,8 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
           type="password"
           placeholder="New Password"
           className="border rounded-md px-2 py-1 w-full mb-2 text-black"
+          value={newPass}
+          onChange={(e) => setNewPass(e.target.value)}
         />
 
         <label className="block mb-3">Confirm Password:</label>
@@ -72,8 +104,13 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
           type="password"
           placeholder="Confirm Password"
           className="border rounded-md px-2 py-1 w-full mb-2 text-black"
+          value={confirmNewPass}
+          onChange={(e) => setConfirmNewPass(e.target.value)}
         />
-        <button className="mt-2 bg-blue-500 text-white py-1 px-4 rounded-md">
+        <button
+          className="mt-2 bg-blue-500 text-white py-1 px-4 rounded-md"
+          onClick={handleUpdatePass}
+        >
           Update Password
         </button>
       </div>
