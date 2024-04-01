@@ -36,8 +36,11 @@ func main() {
 
 	r.POST("/signup", controllers.SignUp)
 	r.POST("/login", controllers.Login)
+	r.POST("/upload-avatar", middleware.RequireAuth, controllers.UserAvatar)
+
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 	r.GET("/logout", middleware.RequireAuth, controllers.Logout)
+
 	r.PUT("/update-user", middleware.RequireAuth, controllers.UpdateUsername)
 	r.PUT("/update-password", middleware.RequireAuth, controllers.UpdatePassword)
 
