@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -193,5 +194,43 @@ func UpdatePassword(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Password updated successfully",
+	})
+}
+
+func UserAvatar(c *gin.Context) {
+	//get the authenticated user from the context
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
+
+	//get the file from the req
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "No file uploaded",
+		})
+		return
+	}
+
+	//save the file to a location
+	filePath := fmt.Sprintf("uploads/%s_%s", currentUser.Username, file.Filename)
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to save file",
+		})
+		return
+	}
+
+	//uploads the users avatar in the db
+	currentUser.Avatar = filePath
+	result := initializers.DB.Save(&currentUser)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to update avatar",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Avatar updated successfully",
 	})
 }
