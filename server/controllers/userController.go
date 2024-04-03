@@ -230,7 +230,10 @@ func UserAvatar(c *gin.Context) {
 		return
 	}
 
+	//return the avatar url in res
+	avatarURL := "http://localhost:8000/" + filePath
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Avatar updated successfully",
+		"message":    "Avatar updated successfully",
+		"avatar_url": avatarURL,
 	})
 }
