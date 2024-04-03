@@ -12,6 +12,7 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState("/assets/img/default-avatar.png");
 
   const baseUrl = "http://localhost:8000";
   const navigate = useNavigate();
@@ -60,6 +61,12 @@ const Header = () => {
         });
 
         setUsername(response.data.message.Username);
+
+        //set user image
+        if (response.data.message.Avatar) {
+          setAvatar(`${baseUrl}/${response.data.message.Avatar}`);
+          console.log(response.data.message.Avatar);
+        }
       } catch (error) {
         toast.error("Error fetching data", {
           theme: "dark",
@@ -76,7 +83,7 @@ const Header = () => {
       <h1 className="font-bold text-xl">noteXs</h1>
       <nav>
         <img
-          src="/assets/img/user.png"
+          src={avatar}
           className="w-9 mr-8 cursor-pointer"
           alt="user_img"
           onClick={toggleDropDown}
@@ -87,11 +94,7 @@ const Header = () => {
             <div>
               <ul className="text-black">
                 <li className="flex">
-                  <img
-                    src="/assets/img/user.png"
-                    alt=""
-                    className="w-12 rounded-m mr-1 "
-                  />
+                  <img src={avatar} alt="" className="w-12 rounded-m mr-1 " />
                   <h2 className="font-bold m-auto">{username}</h2>
                 </li>
                 <hr className="w-full bg-black h-[1px] border-0 mt-[15px] mb-[10px]"></hr>
