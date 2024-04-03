@@ -19,6 +19,8 @@ func init() {
 func main() {
 	r := gin.Default()
 
+	r.Static("/uploads", "./uploads")
+
 	r.ForwardedByClientIP = true
 	err := r.SetTrustedProxies([]string{"127.0.0.1"})
 	if err != nil {
