@@ -84,7 +84,7 @@ const Header = () => {
       <nav>
         <img
           src={avatar}
-          className="w-9 mr-8 cursor-pointer"
+          className="w-11 h-11 mr-8 cursor-pointer rounded-full"
           alt="user_img"
           onClick={toggleDropDown}
         />
@@ -94,7 +94,11 @@ const Header = () => {
             <div>
               <ul className="text-black">
                 <li className="flex">
-                  <img src={avatar} alt="" className="w-12 rounded-m mr-1 " />
+                  <img
+                    src={avatar}
+                    alt=""
+                    className="w-12 h-12 rounded-full mr-1"
+                  />
                   <h2 className="font-bold m-auto">{username}</h2>
                 </li>
                 <hr className="w-full bg-black h-[1px] border-0 mt-[15px] mb-[10px]"></hr>

@@ -106,7 +106,9 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
       <h2 className="text-xl font-semibold mb-4">Profile Menu</h2>
 
       <div className="mb-4">
-        <label className="block mb-3">Update Username:</label>
+        <label className="block mb-3">
+          <h1 className="">Update Username:</h1>
+        </label>
         <input
           type="text"
           placeholder="New Username"
@@ -118,11 +120,13 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
           className="mt-2 bg-blue-500 text-white py-1 px-4 rounded-md mb-3"
           onClick={handleUpdateUsername}
         >
-          Update Username
+          <span>Update Username</span>
         </button>
       </div>
       <div className="mb-6">
-        <label className="block mb-3">Update Password:</label>
+        <label className="block mb-3">
+          <h1>Update Password:</h1>
+        </label>
         <input
           type="password"
           placeholder="New Password"
@@ -131,7 +135,9 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
           onChange={(e) => setNewPass(e.target.value)}
         />
 
-        <label className="block mb-3">Confirm Password:</label>
+        <label className="block mb-3">
+          <h1>Confirm Password:</h1>
+        </label>
         <input
           type="password"
           placeholder="Confirm Password"
@@ -143,11 +149,13 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
           className="mt-2 bg-blue-500 text-white py-1 px-4 rounded-md"
           onClick={handleUpdatePass}
         >
-          Update Password
+          <span>Update Password</span>
         </button>
       </div>
       <div>
-        <label className="block mb-4">Upload Avatar:</label>
+        <label className="block mb-4">
+          <h1>Upload Avatar:</h1>
+        </label>
         <div className="flex">
           <label htmlFor="fileInput" className="">
             <input
@@ -161,7 +169,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
               className=" ml-4 bg-blue-500 text-white py-1 px-4 rounded-md"
               onClick={handleAvatarUpload}
             >
-              Upload
+              <span>Upload</span>
             </button>
           </label>
         </div>
