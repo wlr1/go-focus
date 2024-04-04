@@ -13,6 +13,9 @@ export default {
         notes:
           'url("https://images.unsplash.com/photo-1475727946784-2890c8fdb9c8?q=80&w=2084&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
       },
+      fontFamily: {
+        custom: ["Poppins-Regular", "sans"],
+      },
     },
   },
   plugins: [],
