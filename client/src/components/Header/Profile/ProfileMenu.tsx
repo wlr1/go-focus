@@ -95,81 +95,72 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fade-in fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-600 shadow-xl p-4 rounded-md z-50">
-      <div className=" flex justify-end ">
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 bg-opacity-80 backdrop-filter backdrop-blur-lg shadow-xl p-6 rounded-md z-50 w-80">
+      <div className="flex justify-end">
         <MdCloseFullscreen
-          size={15}
+          size={20}
           onClick={onClose}
-          className="cursor-pointer hover:scale-125 "
+          className="cursor-pointer text-gray-300 hover:text-white"
         />
       </div>
-      <h2 className="text-xl font-semibold mb-4">Profile Menu</h2>
+      <h2 className="text-2xl font-semibold text-white mb-6">Profile Menu</h2>
 
-      <div className="mb-4">
-        <label className="block mb-3">
-          <h1 className="">Update Username:</h1>
-        </label>
+      <div className="mb-6">
+        <label className="block text-gray-300 mb-2">Update Username:</label>
         <input
           type="text"
           placeholder="New Username"
-          className="border rounded-md px-2 py-1 w-full mb-2 text-black"
+          className="border rounded-md px-3 py-2 w-full mb-2 text-gray-900 bg-gray-200"
           value={newUsername}
           onChange={(e) => setNewUsername(e.target.value)}
         />
         <button
-          className="mt-2 bg-blue-500 text-white py-1 px-4 rounded-md mb-3"
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md w-full transition duration-300"
           onClick={handleUpdateUsername}
         >
-          <span>Update Username</span>
+          Update Username
         </button>
       </div>
       <div className="mb-6">
-        <label className="block mb-3">
-          <h1>Update Password:</h1>
-        </label>
+        <label className="block text-gray-300 mb-2">Update Password:</label>
         <input
           type="password"
           placeholder="New Password"
-          className="border rounded-md px-2 py-1 w-full mb-2 text-black"
+          className="border rounded-md px-3 py-2 w-full mb-2 text-gray-900 bg-gray-200"
           value={newPass}
           onChange={(e) => setNewPass(e.target.value)}
         />
 
-        <label className="block mb-3">
-          <h1>Confirm Password:</h1>
-        </label>
         <input
           type="password"
           placeholder="Confirm Password"
-          className="border rounded-md px-2 py-1 w-full mb-2 text-black"
+          className="border rounded-md px-3 py-2 w-full mb-4 text-gray-900 bg-gray-200"
           value={confirmNewPass}
           onChange={(e) => setConfirmNewPass(e.target.value)}
         />
         <button
-          className="mt-2 bg-blue-500 text-white py-1 px-4 rounded-md"
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md w-full transition duration-300"
           onClick={handleUpdatePass}
         >
-          <span>Update Password</span>
+          Update Password
         </button>
       </div>
       <div>
-        <label className="block mb-4">
-          <h1>Upload Avatar:</h1>
-        </label>
-        <div className="flex">
-          <label htmlFor="fileInput" className="">
-            <input
-              type="file"
-              accept="image/*"
-              id="fileInput"
-              className=""
-              onChange={(e) => setAvatar(e.target.files?.[0] || null)}
-            />
+        <label className="block text-gray-300 mb-2">Upload Avatar:</label>
+        <div className="flex items-center">
+          <input
+            type="file"
+            accept="image/*"
+            id="fileInput"
+            className=""
+            onChange={(e) => setAvatar(e.target.files?.[0] || null)}
+          />
+          <label htmlFor="fileInput" className="cursor-pointer">
             <button
-              className=" ml-4 bg-blue-500 text-white py-1 px-4 rounded-md"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md w-full transition duration-300"
               onClick={handleAvatarUpload}
             >
-              <span>Upload</span>
+              Upload
             </button>
           </label>
         </div>

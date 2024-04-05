@@ -90,42 +90,31 @@ const Header = () => {
         />
 
         {isDropDownOpen && (
-          <div className="fade-in absolute top-[111px] right-[420px] w-[190px] bg-white shadow-md p-4 rounded-md">
+          <div className="absolute top-[111px] right-[420px] w-[190px] bg-white shadow-md p-4 rounded-md border border-gray-200">
             <div>
               <ul className="text-black">
-                <li className="flex">
+                <li className="flex items-center mb-3">
                   <img
                     src={avatar}
                     alt=""
-                    className="w-12 h-12 rounded-full mr-1"
+                    className="w-12 h-12 rounded-full mr-3"
                   />
-                  <h2 className="font-bold m-auto">{username}</h2>
+                  <h2 className="font-bold">{username}</h2>
                 </li>
-                <hr className="w-full bg-black h-[1px] border-0 mt-[15px] mb-[10px]"></hr>
-                <li className="flex text-center ">
+                <hr className="border-b border-gray-200 mb-3"></hr>
+                <li className="flex items-center mb-3 transition duration-300 ease-in-out transform hover:translate-x-1">
                   <FaUserEdit size={21} className="mr-2" />
-                  <a
-                    onClick={toggleProfile}
-                    className="hover:transition-all hover:translate-x-1 hover:font-semibold cursor-pointer"
-                  >
+                  <a onClick={toggleProfile} className="cursor-pointer">
                     Profile
                   </a>
                 </li>
-                <li className="flex text-center">
+                <li className="flex items-center mb-3 transition duration-300 ease-in-out transform hover:translate-x-1">
                   <RiSettings4Fill size={21} className="mr-2" />
-                  <a
-                    href="#"
-                    className="hover:transition-all hover:translate-x-1 hover:font-semibold"
-                  >
-                    Settings
-                  </a>
+                  <a href="#">Settings</a>
                 </li>
-                <li className="flex text-center ">
+                <li className="flex items-center transition duration-300 ease-in-out transform hover:translate-x-1">
                   <IoLogOutSharp size={21} className="mr-2" />
-                  <a
-                    onClick={LogoutUser}
-                    className="hover:transition-all hover:translate-x-1 hover:font-semibold cursor-pointer"
-                  >
+                  <a onClick={LogoutUser} className="cursor-pointer">
                     Logout
                   </a>
                 </li>
@@ -133,6 +122,7 @@ const Header = () => {
             </div>
           </div>
         )}
+
         {isProfileOpen && <ProfileMenu onClose={closeProfile} />}
       </nav>
     </header>
