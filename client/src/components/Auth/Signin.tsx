@@ -30,7 +30,7 @@ const SignIn = () => {
       });
 
       setTimeout(() => {
-        navigate("/notes");
+        navigate("/settings");
         toast.dismiss();
       }, 2000);
     } catch (error) {
