@@ -1,12 +1,12 @@
 import Header from "../Header/Header";
 import PomoContent from "./PomoContent/PomoContent";
 
-const SettingsPage = () => {
+const PomoPage = () => {
   return (
     <>
       <Header />
-      <div className="bg-notes h-screen flex justify-center items-center">
-        <div className="">
+      <div className="bg-notes min-h-screen flex justify-center items-center">
+        <div className="w-full max-w-screen-lg mx-auto">
           <PomoContent />
         </div>
       </div>
@@ -14,4 +14,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default PomoPage;
