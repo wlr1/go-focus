@@ -1,6 +1,6 @@
 import React from "react";
 
-const SettingsContent = () => {
+const PomoContent = () => {
   return (
     <div className="flex justify-between">
       <div className=" w-[1200px] h-[571px]  shadow-amber-800 shadow-2xl">
@@ -11,4 +11,4 @@ const SettingsContent = () => {
   );
 };
 
-export default SettingsContent;
+export default PomoContent;

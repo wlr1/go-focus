@@ -80,7 +80,7 @@ const Header = () => {
   return (
     <header className=" w-1/2 fixed top-4  rounded-3xl bg-gray-700 bg-opacity-80 text-white mx-auto left-1/4">
       <div className=" h-[44px] flex justify-between  items-center p-4 mt-4 ">
-        <h1 className="font-bold text-xl mb-4">go-pomo</h1>
+        <h1 className="font-bold text-xl mb-4">go-focus</h1>
         <nav>
           <img
             src={avatar}

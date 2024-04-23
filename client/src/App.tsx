@@ -1,11 +1,11 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import SignIn from "./components/Auth/Signin";
 import SignUp from "./components/Auth/Signup";
-import Notes from "./components/Notes";
+// import Notes from "./components/Notes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import StartPage from "./components/StartPage/StartPage";
-import SettingsPage from "./components/SettingsPage/SettingsPage";
+import PomoPage from "./components/PomoPage/PomoPage";
 
 const router = createBrowserRouter([
   {
@@ -13,8 +13,8 @@ const router = createBrowserRouter([
     element: <StartPage />,
   },
   {
-    path: "/settings",
-    element: <SettingsPage />,
+    path: "/pomo",
+    element: <PomoPage />,
   },
   {
     path: "/login",
@@ -23,10 +23,6 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <SignUp />,
-  },
-  {
-    path: "/notes",
-    element: <Notes />,
   },
 ]);
 

@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { IoChevronDownOutline } from "react-icons/io5";
 import Header from "../Header/Header";
-import SettingsContent from "./SettingsContent/SettingsContent";
+import PomoContent from "./PomoContent/PomoContent";
 
 const SettingsPage = () => {
   return (
@@ -9,7 +7,7 @@ const SettingsPage = () => {
       <Header />
       <div className="bg-notes h-screen flex justify-center items-center">
         <div className="">
-          <SettingsContent />
+          <PomoContent />
         </div>
       </div>
     </>

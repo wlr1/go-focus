@@ -22,7 +22,7 @@ const StartPage = () => {
       >
         <div className="flex items-center justify-center mb-4">
           <FiEdit3 className="text-4xl text-blue-500 mr-2" />
-          <h1 className="text-4xl font-bold">Notes App</h1>
+          <h1 className="text-4xl font-bold">Focus App</h1>
         </div>
         <p className="text-gray-700 mb-6">
           Welcome to our notes app. Write, save, and organize your notes

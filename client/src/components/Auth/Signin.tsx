@@ -30,7 +30,7 @@ const SignIn = () => {
       });
 
       setTimeout(() => {
-        navigate("/settings");
+        navigate("/pomo");
         toast.dismiss();
       }, 2000);
     } catch (error) {
