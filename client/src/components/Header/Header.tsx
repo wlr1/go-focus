@@ -84,7 +84,7 @@ const Header = () => {
         <nav>
           <img
             src={avatar}
-            className="w-9 h-9 mr-8 mb-4 cursor-pointer rounded-full"
+            className="w-9 h-9 mr-4 mb-4 cursor-pointer rounded-full"
             alt="user_img"
             onClick={toggleDropDown}
           />

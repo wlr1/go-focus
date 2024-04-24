@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        darkpal: "#D8D9DA",
+        darkpal: "#545764",
       },
       backgroundImage: {
         bgmain:

@@ -16,17 +16,19 @@ const StartPage = () => {
         style={{ backdropFilter: "blur(11px)" }}
       ></div>
       <div
-        className={`bg-white shadow-lg shadow-blue-500 rounded-lg p-8 bg-opacity-90 ${
+        className={`bg-white shadow-lg shadow-blue-500 rounded-lg p-8 bg-opacity-90 max-w-[1000px] ${
           Animation ? "fade-start" : ""
         }`}
       >
         <div className="flex items-center justify-center mb-4">
           <FiEdit3 className="text-4xl text-blue-500 mr-2" />
-          <h1 className="text-4xl font-bold">Focus App</h1>
+          <h1 className="text-4xl font-bold">Pomo-focus App</h1>
         </div>
-        <p className="text-gray-700 mb-6">
-          Welcome to our notes app. Write, save, and organize your notes
-          effortlessly.
+        <p className="text-gray-700 mb-6 text-center">
+          Welcome to pomo-focus! Customize your work sessions to match your
+          productivity style. Set your preferred timer duration for focused work
+          intervals, take breaks when you need them, and stay organized with our
+          note-taking features.
         </p>
         <div className="flex justify-center">
           <Link to="/login">
