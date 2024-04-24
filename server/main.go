@@ -46,5 +46,7 @@ func main() {
 	r.PUT("/update-user", middleware.RequireAuth, controllers.UpdateUsername)
 	r.PUT("/update-password", middleware.RequireAuth, controllers.UpdatePassword)
 
+	r.DELETE("/delete-user", middleware.RequireAuth, controllers.DeleteUser)
+
 	log.Fatal(r.Run())
 }

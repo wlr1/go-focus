@@ -197,6 +197,30 @@ func UpdatePassword(c *gin.Context) {
 	})
 }
 
+func DeleteUser(c *gin.Context) {
+	//get the authenticated user from the context
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
+
+	//delete the user from the db
+	result := initializers.DB.Delete(&currentUser)
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to delete user",
+		})
+		return
+	}
+
+	//clear jwt token
+	c.SetCookie("jwt", "", -1, "/", "", false, true)
+
+	//respond with success message
+	c.JSON(http.StatusOK, gin.H{
+		"message": "user deleted successfully",
+	})
+}
+
 func UserAvatar(c *gin.Context) {
 	//get the authenticated user from the context
 	user, _ := c.Get("user")
