@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ProfileMenu from "./Profile/ProfileMenu";
-import { FaUserEdit } from "react-icons/fa";
+import { FaTrashAlt, FaUserEdit } from "react-icons/fa";
 import { RiSettings4Fill } from "react-icons/ri";
 import { IoLogOutSharp } from "react-icons/io5";
 
@@ -47,6 +47,37 @@ const Header = () => {
       }, 2000);
     } catch (error) {
       toast.error("Logout error", {
+        theme: "dark",
+        autoClose: 5000,
+      });
+    }
+  };
+
+  const DeleteUser: React.MouseEventHandler<HTMLAnchorElement> = async (e) => {
+    e.preventDefault();
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+
+    if (!confirmDelete) {
+      return; //user cancelled
+    }
+    try {
+      await axios.delete(`${baseUrl}/delete-user`);
+
+      toast.success("User deleted!", {
+        theme: "dark",
+        autoClose: 1300,
+      });
+
+      setTimeout(() => {
+        if (!document.cookie) {
+          navigate("/login");
+        }
+      }, 2000);
+    } catch (error) {
+      toast.error("Failed to delete user", {
         theme: "dark",
         autoClose: 5000,
       });
@@ -100,7 +131,7 @@ const Header = () => {
                     />
                     <h2 className="font-bold">{username}</h2>
                   </li>
-                  <hr className="border-b border-gray-200 mb-3"></hr>
+                  <hr className="border-b border-gray-200 my-3 w-[111px] mx-auto"></hr>
                   <li className="flex items-center mb-3 transition duration-300 ease-in-out transform hover:translate-x-1">
                     <FaUserEdit size={21} className="mr-2" />
                     <a onClick={toggleProfile} className="cursor-pointer">
@@ -115,6 +146,13 @@ const Header = () => {
                     <IoLogOutSharp size={21} className="mr-2" />
                     <a onClick={LogoutUser} className="cursor-pointer">
                       Logout
+                    </a>
+                  </li>
+                  <hr className="border-b border-gray-200 my-3 w-[111px] mx-auto"></hr>
+                  <li className="flex items-center transition duration-300 ease-in-out transform hover:translate-x-1">
+                    <FaTrashAlt size={19} className="mr-2" color="red" />
+                    <a className="cursor-pointer" onClick={DeleteUser}>
+                      Delete Account
                     </a>
                   </li>
                 </ul>
