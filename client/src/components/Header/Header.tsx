@@ -6,10 +6,12 @@ import ProfileMenu from "./Profile/ProfileMenu";
 import { FaTrashAlt, FaUserEdit } from "react-icons/fa";
 import { RiSettings4Fill } from "react-icons/ri";
 import { IoLogOutSharp } from "react-icons/io5";
+import SettingsMenu from "./Settings/SettingsMenu";
 
 const Header = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState("/assets/img/default-avatar.png");
@@ -22,16 +24,26 @@ const Header = () => {
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
     setIsProfileOpen(false);
+    setIsSettingsOpen(false);
   };
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
+  const toggleSettings = () => {
+    setIsSettingsOpen(!isSettingsOpen);
+  };
+
   const closeProfile = () => {
     setIsProfileOpen(false);
   };
 
+  const closeSettings = () => {
+    setIsSettingsOpen(false);
+  };
+
+  //logout
   const LogoutUser: React.MouseEventHandler<HTMLAnchorElement> = async (e) => {
     e.preventDefault();
     try {
@@ -53,6 +65,7 @@ const Header = () => {
     }
   };
 
+  //delete
   const DeleteUser: React.MouseEventHandler<HTMLAnchorElement> = async (e) => {
     e.preventDefault();
 
@@ -84,6 +97,7 @@ const Header = () => {
     }
   };
 
+  //validate
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -140,7 +154,9 @@ const Header = () => {
                   </li>
                   <li className="flex items-center mb-3 transition duration-300 ease-in-out transform hover:translate-x-1">
                     <RiSettings4Fill size={21} className="mr-2" />
-                    <a href="#">Settings</a>
+                    <a onClick={toggleSettings} className="cursor-pointer">
+                      Settings
+                    </a>
                   </li>
                   <li className="flex items-center transition duration-300 ease-in-out transform hover:translate-x-1">
                     <IoLogOutSharp size={21} className="mr-2" />
@@ -160,6 +176,7 @@ const Header = () => {
             </div>
           )}
           {isProfileOpen && <ProfileMenu onClose={closeProfile} />}
+          {isSettingsOpen && <SettingsMenu onClose={closeSettings} />}
         </nav>
       </div>
     </header>
