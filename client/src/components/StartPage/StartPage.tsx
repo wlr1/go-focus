@@ -22,10 +22,10 @@ const StartPage = () => {
       >
         <div className="flex items-center justify-center mb-4">
           <FiEdit3 className="text-4xl text-blue-500 mr-2" />
-          <h1 className="text-4xl font-bold">Pomo-focus App</h1>
+          <h1 className="text-4xl font-bold">go-focus App</h1>
         </div>
         <p className="text-gray-700 mb-6 text-center">
-          Welcome to pomo-focus! Customize your work sessions to match your
+          Welcome to go-focus! Customize your work sessions to match your
           productivity style. Set your preferred timer duration for focused work
           intervals, take breaks when you need them, and stay organized with our
           note-taking features.

@@ -104,7 +104,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
         />
       </div>
       <h2 className="text-2xl font-semibold text-white mb-6">Profile Menu</h2>
-
+      <hr className="border-b border-gray-400 mb-8 mx-auto"></hr>
       <div className="mb-6">
         <label className="block text-gray-300 mb-2">Update Username:</label>
         <input
