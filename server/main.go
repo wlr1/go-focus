@@ -49,4 +49,5 @@ func main() {
 	r.DELETE("/delete-user", middleware.RequireAuth, controllers.DeleteUser)
 
 	log.Fatal(r.Run())
+
 }
