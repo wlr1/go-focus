@@ -4,13 +4,34 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/gorilla/websocket"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
 	"os"
 	"server/initializers"
 	"server/models"
 	"time"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func WebSocketsHandler(c *gin.Context) {
+	// Allow all origins for websocket connections
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		return true
+	}
+	// upgrade http connection to ws
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Println("Failed to set ws upgrade: ", err)
+		return
+	}
+	defer conn.Close()
+}
 
 func SignUp(c *gin.Context) {
 	//get the email/password off req body

@@ -48,6 +48,8 @@ func main() {
 
 	r.DELETE("/delete-user", middleware.RequireAuth, controllers.DeleteUser)
 
+	r.GET("/ws", controllers.WebSocketsHandler)
+
 	log.Fatal(r.Run())
 
 }
