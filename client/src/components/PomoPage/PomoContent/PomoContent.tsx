@@ -3,16 +3,16 @@ import React from "react";
 const PomoContent = () => {
   return (
     <div className="px-4">
-      <div className="max-w-[600px] mx-auto bg-darkpal rounded-xl shadow-md shadow-white p-8 ">
+      <div className="max-w-[600px] mx-auto bg-darkpal rounded-xl shadow-custom  shadow-gray-700 p-8 ">
         <div className="grid grid-cols-3 text-center text-md mb-6">
           <button className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black">
             Pomodoro
           </button>
           <button className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black">
-            short break
+            Short Break
           </button>
           <button className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black">
-            long break
+            Long Break
           </button>
         </div>
 

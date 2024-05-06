@@ -21,6 +21,10 @@ const Header = () => {
 
   axios.defaults.withCredentials = true;
 
+  const onUpdateUsername = (newUsername: string) => {
+    setUsername(newUsername);
+  };
+
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
     setIsProfileOpen(false);
@@ -175,7 +179,12 @@ const Header = () => {
               </div>
             </div>
           )}
-          {isProfileOpen && <ProfileMenu onClose={closeProfile} />}
+          {isProfileOpen && (
+            <ProfileMenu
+              onClose={closeProfile}
+              onUpdateUsername={onUpdateUsername}
+            />
+          )}
           {isSettingsOpen && <SettingsMenu onClose={closeSettings} />}
         </nav>
       </div>

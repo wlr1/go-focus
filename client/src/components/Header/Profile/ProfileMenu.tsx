@@ -1,39 +1,51 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdCloseFullscreen } from "react-icons/md";
 import { toast } from "react-toastify";
 
 interface ProfileMenuProps {
   onClose: () => void;
+  onUpdateUsername: (newUsername: string) => void;
 }
 
 const baseUrl = "http://localhost:8000";
 
-const ProfileMenu: React.FC<ProfileMenuProps> = ({ onClose }) => {
+const ProfileMenu: React.FC<ProfileMenuProps> = ({
+  onClose,
+  onUpdateUsername,
+}) => {
   const [newUsername, setNewUsername] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirmNewPass, setConfirmNewPass] = useState("");
   const [avatar, setAvatar] = useState<File | null>(null);
 
-  //update username
+  //update username with websocket
   const handleUpdateUsername = async () => {
-    try {
-      await axios.put(
-        `${baseUrl}/update-user`,
-        { username: newUsername },
-        { withCredentials: true }
-      );
+    const ws = new WebSocket("ws://localhost:8000/ws/update-username");
 
-      toast.success("Username updated successfully", {
+    ws.onopen = async () => {
+      try {
+        await ws.send(JSON.stringify({ username: newUsername }));
+        ws.close(); // Close connection after sending the message
+        toast.success("Username updated successfully", {
+          theme: "dark",
+          autoClose: 3000,
+        });
+        onUpdateUsername(newUsername);
+      } catch (error) {
+        toast.error("Cannot update username", {
+          theme: "dark",
+          autoClose: 3000,
+        });
+      }
+    };
+
+    ws.onerror = () => {
+      toast.error("Websocket connection error", {
         theme: "dark",
         autoClose: 3000,
       });
-    } catch (error) {
-      toast.error("Cannot update username", {
-        theme: "dark",
-        autoClose: 3000,
-      });
-    }
+    };
   };
 
   //update pass

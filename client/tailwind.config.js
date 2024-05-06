@@ -16,6 +16,9 @@ export default {
       fontFamily: {
         custom: ["Poppins-Regular", "sans"],
       },
+      boxShadow: {
+        custom: "inset 0 2px 11px 3px rgba(0, 0, 0, 0.05)",
+      },
     },
   },
   plugins: [],
