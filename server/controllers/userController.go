@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -17,20 +18,6 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-}
-
-func WebSocketsHandler(c *gin.Context) {
-	// Allow all origins for websocket connections
-	upgrader.CheckOrigin = func(r *http.Request) bool {
-		return true
-	}
-	// upgrade http connection to ws
-	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-	if err != nil {
-		log.Println("Failed to set ws upgrade: ", err)
-		return
-	}
-	defer conn.Close()
 }
 
 func SignUp(c *gin.Context) {
@@ -144,39 +131,105 @@ func Logout(c *gin.Context) {
 	})
 }
 
-func UpdateUsername(c *gin.Context) {
-	//get the user from context
-	user, _ := c.Get("user")
-	currentUser := user.(models.User)
+func UpdateUsernameWebsocket(c *gin.Context) {
+	// Check origin error (optional for development)
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
-	//get the new username from the req body
-
-	var body struct {
-		Username string
+	// Upgrade HTTP connection to WebSocket
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Println("Failed to set up WebSocket connection:", err)
+		return
 	}
+	defer conn.Close()
 
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
+	// Handle WebSocket logic here
+	// Read incoming message from client
+	_, msg, err := conn.ReadMessage()
+	if err != nil {
+		log.Println("Failed to read message from client:", err)
 		return
 	}
 
-	//update the username in the db
-
-	currentUser.Username = body.Username
-	result := initializers.DB.Save(&currentUser)
-
-	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to update username",
-		})
+	// Get the authenticated user from context using type assertion
+	user, exists := c.Get("user")
+	if !exists {
+		log.Println("Error: User not found in context")
+		conn.WriteMessage(websocket.TextMessage, []byte("Unauthorized"))
 		return
 	}
 
-	//respond with success
-	c.JSON(http.StatusOK, gin.H{})
+	log.Printf("Type of user in context: %T\n", user)
+
+	// Type assert the user to models.User
+	currentUser, ok := user.(models.User)
+	if !ok {
+		log.Println("Error: Unexpected user type in context")
+		conn.WriteMessage(websocket.TextMessage, []byte("Internal server error"))
+		return
+	}
+
+	// Extract username from the message JSON
+	var username struct {
+		Username string `json:"username"`
+	}
+
+	if err := json.Unmarshal(msg, &username); err != nil {
+		log.Println("Failed to parse username from message:", err)
+		conn.WriteMessage(websocket.TextMessage, []byte("Failed to parse username"))
+		return
+	}
+
+	newUsername := username.Username
+
+	// Update the username in the database
+	currentUser.Username = newUsername
+	if err := initializers.DB.Save(&currentUser).Error; err != nil {
+		log.Println("Failed to update username in the database:", err)
+		conn.WriteMessage(websocket.TextMessage, []byte("Failed to update username"))
+		return
+	}
+
+	// Send a response back to the client
+	if err := conn.WriteMessage(websocket.TextMessage, []byte("Username updated successfully")); err != nil {
+		log.Println("Failed to write message to client:", err)
+		return
+	}
 }
+
+//func UpdateUsername(c *gin.Context) {
+//	//get the user from context
+//	user, _ := c.Get("user")
+//	currentUser := user.(models.User)
+//
+//	//get the new username from the req body
+//
+//	var body struct {
+//		Username string
+//	}
+//
+//	if c.Bind(&body) != nil {
+//		c.JSON(http.StatusBadRequest, gin.H{
+//			"error": "Failed to read body",
+//		})
+//		return
+//	}
+//
+//	//update the username in the db
+//
+//	currentUser.Username = body.Username
+//	result := initializers.DB.Save(&currentUser)
+//
+//	if result.Error != nil {
+//		c.JSON(http.StatusBadRequest, gin.H{
+//			"error": "Failed to update username",
+//		})
+//		return
+//	}
+//
+//	//respond with success
+//	c.JSON(http.StatusOK, gin.H{})
+//}
 
 func UpdatePassword(c *gin.Context) {
 	//get the authenticated user from the context

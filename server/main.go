@@ -43,12 +43,16 @@ func main() {
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 	r.GET("/logout", middleware.RequireAuth, controllers.Logout)
 
-	r.PUT("/update-user", middleware.RequireAuth, controllers.UpdateUsername)
+	//r.PUT("/update-user", middleware.RequireAuth, controllers.UpdateUsername)
 	r.PUT("/update-password", middleware.RequireAuth, controllers.UpdatePassword)
 
 	r.DELETE("/delete-user", middleware.RequireAuth, controllers.DeleteUser)
 
-	r.GET("/ws", controllers.WebSocketsHandler)
+	ws := r.Group("/ws")
+	{
+		ws.Use(middleware.RequireAuth)
+		ws.GET("/update-username", controllers.UpdateUsernameWebsocket)
+	}
 
 	log.Fatal(r.Run())
 
