@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import ProfileMenu from "./Profile/ProfileMenu";
 import { FaTrashAlt, FaUserEdit } from "react-icons/fa";
 import { RiSettings4Fill } from "react-icons/ri";
-import { IoLogOutSharp } from "react-icons/io5";
+import { IoLogOutSharp, IoStatsChartSharp } from "react-icons/io5";
 import SettingsMenu from "./Settings/SettingsMenu";
 
 const Header = () => {
@@ -134,7 +134,7 @@ const Header = () => {
     <header className=" w-1/2 fixed top-4 rounded-3xl bg-gray-700 bg-opacity-80 text-white mx-auto left-1/4">
       <div className=" h-[44px] flex justify-between  items-center p-4 mt-4 ">
         <h1 className="font-bold text-xl mb-4">go-focus</h1>
-        <nav>
+        <nav className="flex text-center items-center">
           <img
             src={avatar}
             className="w-9 h-9 mr-4 mb-4 cursor-pointer rounded-full"
@@ -165,6 +165,10 @@ const Header = () => {
                     <a onClick={toggleSettings} className="cursor-pointer">
                       Settings
                     </a>
+                  </li>
+                  <li className="flex items-center mb-3 transition duration-300 ease-in-out transform hover:translate-x-1">
+                    <IoStatsChartSharp size={21} className="mr-2 " />
+                    <a className="cursor-pointer">Statistics</a>
                   </li>
                   <li className="flex items-center transition duration-300 ease-in-out transform hover:translate-x-1">
                     <IoLogOutSharp size={21} className="mr-2" />
