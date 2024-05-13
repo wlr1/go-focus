@@ -25,6 +25,10 @@ const Header = () => {
     setUsername(newUsername);
   };
 
+  const onUpdateAvatar = (newAvatar: string) => {
+    setAvatar(newAvatar);
+  };
+
   const toggleDropDown = () => {
     setIsDropDownOpen(!isDropDownOpen);
     setIsProfileOpen(false);
@@ -183,6 +187,7 @@ const Header = () => {
             <ProfileMenu
               onClose={closeProfile}
               onUpdateUsername={onUpdateUsername}
+              onUpdateAvatar={onUpdateAvatar}
             />
           )}
           {isSettingsOpen && <SettingsMenu onClose={closeSettings} />}

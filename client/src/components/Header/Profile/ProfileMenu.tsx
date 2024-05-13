@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 interface ProfileMenuProps {
   onClose: () => void;
   onUpdateUsername: (newUsername: string) => void;
+  onUpdateAvatar: (newAvatar: File | null) => void;
 }
 
 const baseUrl = "http://localhost:8000";
@@ -13,6 +14,7 @@ const baseUrl = "http://localhost:8000";
 const ProfileMenu: React.FC<ProfileMenuProps> = ({
   onClose,
   onUpdateUsername,
+  onUpdateAvatar,
 }) => {
   const [newUsername, setNewUsername] = useState("");
   const [newPass, setNewPass] = useState("");
@@ -26,12 +28,13 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
     ws.onopen = async () => {
       try {
         await ws.send(JSON.stringify({ username: newUsername }));
-        ws.close(); // Close connection after sending the message
+        ws.close();
         toast.success("Username updated successfully", {
           theme: "dark",
           autoClose: 3000,
         });
         onUpdateUsername(newUsername);
+        setNewUsername("");
       } catch (error) {
         toast.error("Cannot update username", {
           theme: "dark",
@@ -91,13 +94,16 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
     formData.append("avatar", avatar);
 
     try {
-      await axios.post(`${baseUrl}/upload-avatar`, formData, {
+      const response = await axios.post(`${baseUrl}/upload-avatar`, formData, {
         withCredentials: true,
       });
+
+      const newAvatar = response.data.avatar_url;
       toast.success("Avatar updated successfully", {
         theme: "dark",
         autoClose: 3000,
       });
+      onUpdateAvatar(newAvatar);
     } catch (error) {
       toast.error("Failed to update avatar", {
         theme: "dark",
