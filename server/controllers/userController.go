@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/websocket"
 	"golang.org/x/crypto/bcrypt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +19,24 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+}
+
+// Function to save file
+func saveFile(filePath string, reader io.Reader) error {
+	// Create destination file
+	dst, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy the file contents to destination
+	_, err = io.Copy(dst, reader)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func SignUp(c *gin.Context) {
@@ -132,7 +151,7 @@ func Logout(c *gin.Context) {
 }
 
 func UpdateUsernameWebsocket(c *gin.Context) {
-	// Check origin error (optional for development)
+	// Check origin error
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	// Upgrade HTTP connection to WebSocket
@@ -143,7 +162,6 @@ func UpdateUsernameWebsocket(c *gin.Context) {
 	}
 	defer conn.Close()
 
-	// Handle WebSocket logic here
 	// Read incoming message from client
 	_, msg, err := conn.ReadMessage()
 	if err != nil {
@@ -195,6 +213,132 @@ func UpdateUsernameWebsocket(c *gin.Context) {
 		log.Println("Failed to write message to client:", err)
 		return
 	}
+}
+
+//func UserAvatarWebsocket(c *gin.Context) {
+//	// Check origin error
+//	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+//
+//	// Upgrade HTTP connection to WebSocket
+//	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+//	if err != nil {
+//		log.Println("Failed to set up WebSocket connection:", err)
+//		return
+//	}
+//
+//	// Read incoming message from client
+//	_, msg, err := conn.ReadMessage()
+//	if err != nil {
+//		log.Println("Failed to read message from client:", err)
+//		return
+//	}
+//
+//	// Get the authenticated user from context using type assertion
+//	user, exists := c.Get("user")
+//	if !exists {
+//		log.Println("Error: User not found in context")
+//		conn.WriteMessage(websocket.TextMessage, []byte("Unauthorized"))
+//		return
+//	}
+//
+//	log.Printf("Type of user in context: %T\n", user)
+//
+//	// Type assert the user to models.User
+//	currentUser, ok := user.(models.User)
+//	if !ok {
+//		log.Println("Error: Unexpected user type in context")
+//		conn.WriteMessage(websocket.TextMessage, []byte("Internal server error"))
+//		return
+//	}
+//
+//	// Parse the message JSON to get the file name
+//	var filename struct {
+//		Filename string `json:"filename"`
+//	}
+//
+//	if err := json.Unmarshal(msg, &filename); err != nil {
+//		log.Println("Failed to parse filename from message:", err)
+//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to parse filename"))
+//		return
+//	}
+//
+//	// Receive file from client
+//	_, file, err := conn.NextReader()
+//	if err != nil {
+//		log.Println("Failed to receive file from client:", err)
+//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to receive file"))
+//		return
+//	}
+//
+//	// Save the file to a location
+//	filePath := filepath.Join("uploads", currentUser.Username+"_"+filename.Filename)
+//	if err := saveFile(filePath, file); err != nil {
+//		log.Println("Failed to save file:", err)
+//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to save file"))
+//		return
+//	}
+//
+//	// Update the user's avatar in the database
+//	currentUser.Avatar = filePath
+//	if err := initializers.DB.Save(&currentUser).Error; err != nil {
+//		log.Println("Failed to update user in database:", err)
+//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to update avatar"))
+//		return
+//	}
+//
+//	// Send a response back to the client
+//	if err := conn.WriteMessage(websocket.TextMessage, []byte("Avatar updated successfully")); err != nil {
+//		log.Println("Failed to write message to client:", err)
+//		return
+//	}
+//
+//	// Set cache headers
+//	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+//	c.Header("Pragma", "no-cache")
+//	c.Header("Expires", "0")
+//
+//	defer conn.Close()
+//}
+
+func UserAvatar(c *gin.Context) {
+	//get the authenticated user from the context
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
+
+	//get the file from the req
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "No file uploaded",
+		})
+		return
+	}
+
+	//save the file to a location
+	filePath := fmt.Sprintf("uploads/%s_%s", currentUser.Username, file.Filename)
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to save file",
+		})
+		return
+	}
+
+	//uploads the users avatar in the db
+	currentUser.Avatar = filePath
+	result := initializers.DB.Save(&currentUser)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to update avatar",
+		})
+		return
+	}
+
+	//return the avatar url in res
+	avatarURL := "http://localhost:8000/" + filePath
+	c.JSON(http.StatusOK, gin.H{
+		"message":    "Avatar updated successfully",
+		"avatar_url": avatarURL,
+	})
 }
 
 //func UpdateUsername(c *gin.Context) {
@@ -295,43 +439,42 @@ func DeleteUser(c *gin.Context) {
 	})
 }
 
-func UserAvatar(c *gin.Context) {
-	//get the authenticated user from the context
+//POMODORO
+
+// start
+func StartPomodoro(c *gin.Context) {
+	//get the authenticated user from context
 	user, _ := c.Get("user")
 	currentUser := user.(models.User)
 
-	//get the file from the req
-	file, err := c.FormFile("avatar")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "No file uploaded",
-		})
-		return
+	//start a new pomodoro session for the current user
+	startTime := time.Now()
+
+	//create a new pomodoro session object
+	pomodoro := models.Pomodoro{
+		UserID:    currentUser.ID, // associate pomodoro session with current user
+		StartTime: startTime,
 	}
 
-	//save the file to a location
-	filePath := fmt.Sprintf("uploads/%s_%s", currentUser.Username, file.Filename)
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
+	//save the pomodoro session to the db
+	if err := initializers.DB.Save(&pomodoro).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to save file",
+			"error": "Failed to save pomodoro session",
 		})
 		return
 	}
 
-	//uploads the users avatar in the db
-	currentUser.Avatar = filePath
-	result := initializers.DB.Save(&currentUser)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to update avatar",
-		})
-		return
-	}
+	//res with success msg
 
-	//return the avatar url in res
-	avatarURL := "http://localhost:8000/" + filePath
-	c.JSON(http.StatusOK, gin.H{
-		"message":    "Avatar updated successfully",
-		"avatar_url": avatarURL,
-	})
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro session started successfully"})
+}
+
+// stop
+func StopPomodoro(c *gin.Context) {
+
+}
+
+// stats
+func GetPomodoroStats(c *gin.Context) {
+
 }

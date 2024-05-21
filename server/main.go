@@ -39,7 +39,10 @@ func main() {
 	r.POST("/signup", controllers.SignUp)
 	r.POST("/login", controllers.Login)
 	r.POST("/upload-avatar", middleware.RequireAuth, controllers.UserAvatar)
+	r.POST("/start-pomodoro", middleware.RequireAuth, controllers.StartPomodoro)
+	r.POST("/stop-pomodoro", middleware.RequireAuth, controllers.StopPomodoro)
 
+	r.GET("/pomodoro-stats", middleware.RequireAuth, controllers.GetPomodoroStats)
 	r.GET("/validate", middleware.RequireAuth, controllers.Validate)
 	r.GET("/logout", middleware.RequireAuth, controllers.Logout)
 
@@ -52,6 +55,7 @@ func main() {
 	{
 		ws.Use(middleware.RequireAuth)
 		ws.GET("/update-username", controllers.UpdateUsernameWebsocket)
+
 	}
 
 	log.Fatal(r.Run())
