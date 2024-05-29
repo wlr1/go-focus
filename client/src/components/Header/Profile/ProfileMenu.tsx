@@ -124,7 +124,9 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
       <h2 className="text-2xl font-semibold text-white mb-6">Profile Menu</h2>
       <hr className="border-b border-gray-400 mb-8 mx-auto"></hr>
       <div className="mb-6">
-        <label className="block text-gray-300 mb-2">Update Username:</label>
+        <label className="block text-gray-300 mb-2 text-left">
+          Update Username:
+        </label>
         <input
           type="text"
           placeholder="New Username"
@@ -140,7 +142,9 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
         </button>
       </div>
       <div className="mb-6">
-        <label className="block text-gray-300 mb-2">Update Password:</label>
+        <label className="block text-gray-300 mb-2 text-left">
+          Update Password:
+        </label>
         <input
           type="password"
           placeholder="New Password"
@@ -164,7 +168,9 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
         </button>
       </div>
       <div>
-        <label className="block text-gray-300 mb-2">Upload Avatar:</label>
+        <label className="block text-gray-300 mb-2 text-left">
+          Upload Avatar:
+        </label>
         <div className="flex items-center">
           <input
             type="file"
