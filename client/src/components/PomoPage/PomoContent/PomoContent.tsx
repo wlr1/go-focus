@@ -4,9 +4,17 @@ import { GrPowerReset } from "react-icons/gr";
 
 const baseUrl = "http://localhost:8000";
 
-const PomoContent = () => {
-  const [timer, setTimer] = useState(1500);
+interface PomodoroTimeChange {
+  pomodoroTime: number;
+}
+
+const PomoContent: React.FC<PomodoroTimeChange> = ({ pomodoroTime }) => {
+  const [timer, setTimer] = useState(pomodoroTime);
   const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    setTimer(pomodoroTime);
+  }, [pomodoroTime]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
@@ -19,9 +27,7 @@ const PomoContent = () => {
       if (interval) clearInterval(interval);
     }
 
-    return () => {
-      if (interval) clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [isActive, timer]);
 
   const startPomodoro = async () => {
@@ -34,7 +40,7 @@ const PomoContent = () => {
         }
       );
       if (response.status === 200) {
-        setTimer(1500);
+        setTimer(pomodoroTime);
         setIsActive(true);
       }
     } catch (error) {

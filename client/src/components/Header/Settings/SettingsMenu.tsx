@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { MdCloseFullscreen, MdOutlineTimer } from "react-icons/md";
 
 interface SettingsMenuProps {
   onClose: () => void;
+  onPomodoroTimeChange: (newTime: number) => void;
 }
 
-const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
+const SettingsMenu: React.FC<SettingsMenuProps> = ({
+  onClose,
+  onPomodoroTimeChange,
+}) => {
+  const [pomodoroInput, setPomodoroInput] = useState(25);
+
+  const handlePomodoroInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newTime = parseInt(e.target.value, 10);
+    setPomodoroInput(newTime);
+    onPomodoroTimeChange(newTime);
+  };
   return (
     <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 bg-opacity-80 backdrop-filter backdrop-blur-lg shadow-xl p-6 rounded-md z-50 max-w-[329px]">
       <div className="flex justify-end">
@@ -32,6 +45,8 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
             type="number"
             min={0}
             step={1}
+            value={pomodoroInput}
+            onChange={handlePomodoroInputChange}
             className="w-16 text-black rounded-lg p-1 bg-gray-300 focus:outline-none focus:shadow-outline shadow-inner shadow-black"
           />
         </div>
