@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { GrPowerReset } from "react-icons/gr";
+import { toast } from "react-toastify";
 
 const baseUrl = "http://localhost:8000";
 
@@ -30,6 +31,7 @@ const PomoContent: React.FC<PomodoroTimeChange> = ({ pomodoroTime }) => {
     return () => clearInterval(interval);
   }, [isActive, timer]);
 
+  //start timer
   const startPomodoro = async () => {
     try {
       const response = await axios.post(
@@ -48,10 +50,58 @@ const PomoContent: React.FC<PomodoroTimeChange> = ({ pomodoroTime }) => {
     }
   };
 
-  const stopPomodoro = () => {
-    setIsActive(false);
+  //stop timer
+  const stopPomodoro = async () => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}/pomodoro/stop`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        setIsActive(false);
+        toast.success("Successfully stopped!", {
+          theme: "dark",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("Already stopped!", {
+        theme: "dark",
+        autoClose: 3000,
+      });
+    }
   };
 
+  //reset timer
+  const resetPomodoro = async () => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}/pomodoro/reset`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        setIsActive(false);
+        setTimer(pomodoroTime);
+        toast.success("reset", {
+          theme: "dark",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("Reset error", {
+        theme: "dark",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  //format time
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -76,7 +126,7 @@ const PomoContent: React.FC<PomodoroTimeChange> = ({ pomodoroTime }) => {
         </div>
         <div className="text-center flex justify-center items-center space-x-2">
           <span className="text-white">#1</span>
-          <a className="cursor-pointer">
+          <a className="cursor-pointer " onClick={resetPomodoro}>
             <GrPowerReset className="text-neutral-300" />
           </a>
         </div>
