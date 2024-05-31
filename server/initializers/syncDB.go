@@ -1,7 +1,16 @@
 package initializers
 
-import "server/models"
+import (
+	"log"
+	"server/models"
+)
 
 func SyncDatabase() {
-	DB.AutoMigrate(&models.User{})
+	err := DB.AutoMigrate(&models.User{}, &models.PomodoroSessions{})
+	if err != nil {
+		log.Fatalf("Could not migrate database: %v", err)
+	} else {
+		log.Println("Database migrated successfully")
+	}
+
 }

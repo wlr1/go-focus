@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/websocket"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"io"
 	"log"
 	"net/http"
@@ -15,6 +16,12 @@ import (
 	"server/models"
 	"time"
 )
+
+var db *gorm.DB
+
+func init() {
+	db = initializers.DB
+}
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -447,34 +454,115 @@ func StartPomodoro(c *gin.Context) {
 	user, _ := c.Get("user")
 	currentUser := user.(models.User)
 
-	//start a new pomodoro session for the current user
-	startTime := time.Now()
-
-	//create a new pomodoro session object
-	pomodoro := models.Pomodoro{
-		UserID:    currentUser.ID, // associate pomodoro session with current user
-		StartTime: startTime,
+	var body struct {
+		Duration int `json:"duration"`
 	}
 
-	//save the pomodoro session to the db
-	if err := initializers.DB.Save(&pomodoro).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to save pomodoro session",
-		})
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
 		return
 	}
 
-	//res with success msg
+	if body.Duration == 0 {
+		body.Duration = 1500 //def 25 min if not provided
+	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro session started successfully"})
+	var pomodoro models.PomodoroSessions
+	initializers.DB.Where("user_id = ? AND is_active = ?", currentUser.ID, true).First(&pomodoro)
+
+	if pomodoro.ID != 0 {
+		c.JSON(http.StatusOK, gin.H{"error": "Pomodoro already started"})
+		return
+	}
+
+	pomodoro = models.PomodoroSessions{
+		UserID:    currentUser.ID,
+		StartTime: time.Now(),
+		Duration:  body.Duration,
+		IsActive:  true,
+	}
+
+	initializers.DB.Create(&pomodoro)
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro started"})
+
 }
 
 // stop
 func StopPomodoro(c *gin.Context) {
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
 
+	var pomodoro models.PomodoroSessions
+	initializers.DB.Where("user_id = ? AND is_active = ?", currentUser.ID, true).First(&pomodoro)
+
+	if pomodoro.ID == 0 {
+		c.JSON(http.StatusOK, gin.H{"error": "No active pomodoro"})
+		return
+	}
+
+	pomodoro.IsActive = false
+	pomodoro.EndTime = time.Now()
+	pomodoro.Duration = int(pomodoro.EndTime.Sub(pomodoro.StartTime).Seconds())
+
+	initializers.DB.Save(&pomodoro)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro stopped"})
 }
 
-// stats
-func GetPomodoroStats(c *gin.Context) {
+//reset
 
+func ResetPomodoro(c *gin.Context) {
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
+
+	var pomodoro models.PomodoroSessions
+	initializers.DB.Where("user_id = ? AND is_active = ?", currentUser.ID, true).First(&pomodoro)
+
+	if pomodoro.ID == 0 {
+		c.JSON(http.StatusOK, gin.H{"error": "No active pomodoro to reset"})
+		return
+	}
+	initializers.DB.Delete(&pomodoro)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro reset"})
 }
+
+//update duration
+
+func DurationPomodoro(c *gin.Context) {
+	userID := c.GetUint("userID")
+	var req struct {
+		Duration int `json:"duration"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update the user's pomodoro duration in the database
+	if err := db.Model(&models.PomodoroSessions{}).Where("user_id = ?", userID).Update("duration", req.Duration).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update duration"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Duration updated"})
+}
+
+//fetch user-specific pomo duration
+
+func GetPomodoroDuration(c *gin.Context) {
+	userID := c.MustGet("userID").(uint)
+	var session models.PomodoroSessions
+
+	if err := db.Where("user_id = ? ", userID).First(&session).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch duration"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"duration": session.Duration})
+}
+
+//// stats
+//func GetPomodoroStats(c *gin.Context) {
+//
+//}
