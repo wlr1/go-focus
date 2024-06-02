@@ -8,11 +8,7 @@ import { RiSettings4Fill } from "react-icons/ri";
 import { IoLogOutSharp, IoStatsChartSharp } from "react-icons/io5";
 import SettingsMenu from "./Settings/SettingsMenu";
 
-interface PomodoroTimeChange {
-  onPomodoroTimeChange: (newTime: number) => void;
-}
-
-const Header: React.FC<PomodoroTimeChange> = ({ onPomodoroTimeChange }) => {
+const Header = () => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -198,12 +194,7 @@ const Header: React.FC<PomodoroTimeChange> = ({ onPomodoroTimeChange }) => {
               onUpdateAvatar={onUpdateAvatar}
             />
           )}
-          {isSettingsOpen && (
-            <SettingsMenu
-              onClose={closeSettings}
-              onPomodoroTimeChange={onPomodoroTimeChange}
-            />
-          )}
+          {isSettingsOpen && <SettingsMenu onClose={closeSettings} />}
         </nav>
       </div>
     </header>

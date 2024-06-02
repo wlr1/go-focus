@@ -5,100 +5,29 @@ import { toast } from "react-toastify";
 
 const baseUrl = "http://localhost:8000";
 
-interface PomodoroTimeChange {
-  pomodoroTime: number;
-}
-
-const PomoContent: React.FC<PomodoroTimeChange> = ({ pomodoroTime }) => {
-  const [timer, setTimer] = useState(pomodoroTime);
-  const [isActive, setIsActive] = useState(false);
+const PomoContent = () => {
+  const [duration, setDuration] = useState<number>(25 * 60);
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   useEffect(() => {
-    setTimer(pomodoroTime);
-  }, [pomodoroTime]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout | undefined;
-
-    if (isActive) {
-      interval = setInterval(() => {
-        setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
-      }, 1000);
-    } else if (!isActive && timer !== 0) {
-      if (interval) clearInterval(interval);
-    }
-
-    return () => clearInterval(interval);
-  }, [isActive, timer]);
-
-  //start timer
-  const startPomodoro = async () => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/pomodoro/start`,
-        {},
-        {
-          withCredentials: true,
+    axios
+      .get(`${baseUrl}/pomodoro/get-duration`, { withCredentials: true })
+      .then((response) => {
+        if (response.status === 200) {
+          setDuration(response.data.duration);
         }
-      );
-      if (response.status === 200) {
-        setTimer(pomodoroTime);
-        setIsActive(true);
-      }
-    } catch (error) {
-      console.error("Failed to start pomodoro", error);
-    }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch pomodoro duration", error.message);
+      });
+  }, []);
+
+  const startPomodoro = () => {
+    setIsActive(true);
   };
 
-  //stop timer
-  const stopPomodoro = async () => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/pomodoro/stop`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.status === 200) {
-        setIsActive(false);
-        toast.success("Successfully stopped!", {
-          theme: "dark",
-          autoClose: 3000,
-        });
-      }
-    } catch (error) {
-      toast.error("Already stopped!", {
-        theme: "dark",
-        autoClose: 3000,
-      });
-    }
-  };
-
-  //reset timer
-  const resetPomodoro = async () => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/pomodoro/reset`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.status === 200) {
-        setIsActive(false);
-        setTimer(pomodoroTime);
-        toast.success("reset", {
-          theme: "dark",
-          autoClose: 3000,
-        });
-      }
-    } catch (error) {
-      toast.error("Reset error", {
-        theme: "dark",
-        autoClose: 3000,
-      });
-    }
+  const stopPomodoro = () => {
+    setIsActive(false);
   };
 
   //format time
@@ -126,14 +55,14 @@ const PomoContent: React.FC<PomodoroTimeChange> = ({ pomodoroTime }) => {
         </div>
         <div className="text-center flex justify-center items-center space-x-2">
           <span className="text-white">#1</span>
-          <a className="cursor-pointer " onClick={resetPomodoro}>
+          <a className="cursor-pointer ">
             <GrPowerReset className="text-neutral-300" />
           </a>
         </div>
 
         <div className="text-center">
           <span className="font-bold text-[12vh] text-gray-200">
-            {formatTime(timer)}
+            {formatTime(duration)}
           </span>
         </div>
         <div className="text-center mt-6">
