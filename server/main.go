@@ -58,11 +58,8 @@ func main() {
 	pomodoro := r.Group("/pomodoro")
 	{
 		pomodoro.Use(middleware.RequireAuth)
-		pomodoro.GET("/duration", controllers.GetPomodoroDuration)
-		pomodoro.POST("/start", controllers.StartPomodoro)
-		pomodoro.POST("/stop", controllers.StopPomodoro)
-		pomodoro.POST("/reset", controllers.ResetPomodoro)
-		pomodoro.PUT("/update-duration", controllers.DurationPomodoro)
+		pomodoro.POST("/set-duration", controllers.SetPomodoroDuration)
+		pomodoro.GET("/get-duration", controllers.GetPomodoroDuration)
 	}
 
 	log.Fatal(r.Run())

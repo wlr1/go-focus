@@ -448,121 +448,52 @@ func DeleteUser(c *gin.Context) {
 
 //POMODORO
 
-// start
-func StartPomodoro(c *gin.Context) {
-	//get the authenticated user from context
-	user, _ := c.Get("user")
-	currentUser := user.(models.User)
-
-	var body struct {
-		Duration int `json:"duration"`
-	}
-
-	if err := c.Bind(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body"})
-		return
-	}
-
-	if body.Duration == 0 {
-		body.Duration = 1500 //def 25 min if not provided
-	}
-
-	var pomodoro models.PomodoroSessions
-	initializers.DB.Where("user_id = ? AND is_active = ?", currentUser.ID, true).First(&pomodoro)
-
-	if pomodoro.ID != 0 {
-		c.JSON(http.StatusOK, gin.H{"error": "Pomodoro already started"})
-		return
-	}
-
-	pomodoro = models.PomodoroSessions{
-		UserID:    currentUser.ID,
-		StartTime: time.Now(),
-		Duration:  body.Duration,
-		IsActive:  true,
-	}
-
-	initializers.DB.Create(&pomodoro)
-	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro started"})
-
-}
-
-// stop
-func StopPomodoro(c *gin.Context) {
-	user, _ := c.Get("user")
-	currentUser := user.(models.User)
-
-	var pomodoro models.PomodoroSessions
-	initializers.DB.Where("user_id = ? AND is_active = ?", currentUser.ID, true).First(&pomodoro)
-
-	if pomodoro.ID == 0 {
-		c.JSON(http.StatusOK, gin.H{"error": "No active pomodoro"})
-		return
-	}
-
-	pomodoro.IsActive = false
-	pomodoro.EndTime = time.Now()
-	pomodoro.Duration = int(pomodoro.EndTime.Sub(pomodoro.StartTime).Seconds())
-
-	initializers.DB.Save(&pomodoro)
-
-	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro stopped"})
-}
-
-//reset
-
-func ResetPomodoro(c *gin.Context) {
-	user, _ := c.Get("user")
-	currentUser := user.(models.User)
-
-	var pomodoro models.PomodoroSessions
-	initializers.DB.Where("user_id = ? AND is_active = ?", currentUser.ID, true).First(&pomodoro)
-
-	if pomodoro.ID == 0 {
-		c.JSON(http.StatusOK, gin.H{"error": "No active pomodoro to reset"})
-		return
-	}
-	initializers.DB.Delete(&pomodoro)
-
-	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro reset"})
-}
-
 //update duration
 
-func DurationPomodoro(c *gin.Context) {
-	userID := c.GetUint("userID")
-	var req struct {
-		Duration int `json:"duration"`
+func SetPomodoroDuration(c *gin.Context) {
+	var body struct {
+		Duration uint `json:"duration"`
 	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "failed to read body"})
 		return
 	}
 
-	// Update the user's pomodoro duration in the database
-	if err := db.Model(&models.PomodoroSessions{}).Where("user_id = ?", userID).Update("duration", req.Duration).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update duration"})
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
+	currentUser := user.(models.User)
 
-	c.JSON(http.StatusOK, gin.H{"message": "Duration updated"})
+	pomodoro := models.Pomodoro{
+		UserID:   currentUser.ID,
+		Duration: body.Duration,
+	}
+
+	initializers.DB.Where("user_id = ?", currentUser.ID).Delete(&models.Pomodoro{})
+	initializers.DB.Create(&pomodoro)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro duration set successfully"})
 }
 
-//fetch user-specific pomo duration
+//fetch duration
 
 func GetPomodoroDuration(c *gin.Context) {
-	userID := c.MustGet("userID").(uint)
-	var session models.PomodoroSessions
+	user, _ := c.Get("user")
+	currentUser := user.(models.User)
 
-	if err := db.Where("user_id = ? ", userID).First(&session).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch duration"})
+	var pomodoro models.Pomodoro
+	initializers.DB.First(&pomodoro, "user_id = ?", currentUser.ID)
+
+	if pomodoro.ID == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Pomodoro duration not found",
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"duration": session.Duration})
+	c.JSON(http.StatusOK, gin.H{
+		"duration": pomodoro.Duration,
+	})
 }
-
-//// stats
-//func GetPomodoroStats(c *gin.Context) {
-//
-//}
