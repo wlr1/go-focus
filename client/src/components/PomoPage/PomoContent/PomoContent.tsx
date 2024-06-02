@@ -1,13 +1,19 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GrPowerReset } from "react-icons/gr";
 import { toast } from "react-toastify";
+import useSound from "use-sound";
+
+import buttonSfx from "../../../sounds/button.mp3";
 
 const baseUrl = "http://localhost:8000";
 
 const PomoContent = () => {
   const [duration, setDuration] = useState<number>(25 * 60);
   const [isActive, setIsActive] = useState<boolean>(false);
+
+  const [play] = useSound(buttonSfx);
+  const [stop] = useSound(buttonSfx);
 
   useEffect(() => {
     axios
@@ -24,10 +30,12 @@ const PomoContent = () => {
 
   const startPomodoro = () => {
     setIsActive(true);
+    play();
   };
 
   const stopPomodoro = () => {
     setIsActive(false);
+    stop();
   };
 
   //format time
