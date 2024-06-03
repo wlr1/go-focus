@@ -60,6 +60,9 @@ func main() {
 		pomodoro.Use(middleware.RequireAuth)
 		pomodoro.POST("/set-duration", controllers.SetPomodoroDuration)
 		pomodoro.GET("/get-duration", controllers.GetPomodoroDuration)
+		pomodoro.POST("/start", controllers.StartPomodoro)
+		pomodoro.POST("/stop", controllers.StopPomodoro)
+		pomodoro.POST("/reset", controllers.ResetPomodoro)
 	}
 
 	log.Fatal(r.Run())

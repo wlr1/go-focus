@@ -497,3 +497,101 @@ func GetPomodoroDuration(c *gin.Context) {
 		"duration": pomodoro.Duration,
 	})
 }
+
+//start
+
+func StartPomodoro(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "unauthorized",
+		})
+		return
+	}
+	currentUser := user.(models.User)
+
+	//get the existing pomodoro record
+	var pomodoro models.Pomodoro
+	result := initializers.DB.First(&pomodoro, "user_id = ?", currentUser.ID)
+
+	//if no existing record, return an error
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Pomodoro record not found",
+		})
+		return
+	}
+
+	//update status to "running" and set the start time
+
+	startTime := time.Now()
+	pomodoro.Status = "running"
+	pomodoro.StartTime = &startTime
+	initializers.DB.Save(&pomodoro)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro started successfully"})
+}
+
+//stop
+
+func StopPomodoro(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	currentUser := user.(models.User)
+
+	//get the existing pomo record
+	var pomodoro models.Pomodoro
+	result := initializers.DB.First(&pomodoro, "user_id = ?", currentUser.ID)
+
+	//if no existing record, return an error
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Pomodoro record not found"})
+		return
+	}
+
+	//update status to "stopped"
+	pomodoro.Status = "stopped"
+	initializers.DB.Save(&pomodoro)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro stopped successfully"})
+}
+
+//reset
+
+func ResetPomodoro(c *gin.Context) {
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "unauthorized",
+		})
+		return
+	}
+	currentUser := user.(models.User)
+
+	//get the existing pomo record
+	var pomodoro models.Pomodoro
+	result := initializers.DB.First(&pomodoro, "user_id = ?", currentUser.ID)
+
+	//if no existing record, return an error
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Pomodoro record not found"})
+		return
+	}
+
+	// save the current duration before reset
+	existingDuration := pomodoro.Duration
+
+	//reset the pomodoro(delete existing and create a new one with initial values)
+	initializers.DB.Delete(&pomodoro)
+	newPomodoro := models.Pomodoro{
+		UserID:   currentUser.ID,
+		Duration: existingDuration,
+		Status:   "reset",
+	}
+	initializers.DB.Create(&newPomodoro)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro reset successfully", "duration": newPomodoro.Duration})
+}
