@@ -12,8 +12,8 @@ const PomoContent = () => {
   const [duration, setDuration] = useState<number>(25 * 60);
   const [isActive, setIsActive] = useState<boolean>(false);
 
-  const [play] = useSound(buttonSfx);
-  const [stop] = useSound(buttonSfx);
+  const [play] = useSound(buttonSfx, { volume: 0.1 });
+  const [stop] = useSound(buttonSfx, { volume: 0.1 });
 
   useEffect(() => {
     axios
@@ -24,7 +24,10 @@ const PomoContent = () => {
         }
       })
       .catch((error) => {
-        console.error("Failed to fetch pomodoro duration", error.message);
+        toast.error(`Failed to fetch pomodoro duration: ${error.message}`, {
+          theme: "dark",
+          autoClose: 3000,
+        });
       });
   }, []);
 

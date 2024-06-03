@@ -1,9 +1,5 @@
-import { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import PomoContent from "./PomoContent/PomoContent";
-import axios from "axios";
-
-const baseUrl = "http://localhost:8000";
 
 const PomoPage = () => {
   return (
