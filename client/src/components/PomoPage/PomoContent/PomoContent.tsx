@@ -11,6 +11,7 @@ const baseUrl = "http://localhost:8000";
 const PomoContent = () => {
   const [duration, setDuration] = useState<number>(25 * 60);
   const [isActive, setIsActive] = useState<boolean>(false);
+  const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
   const [play] = useSound(buttonSfx, { volume: 0.1 });
   const [stop] = useSound(buttonSfx, { volume: 0.1 });
@@ -32,13 +33,76 @@ const PomoContent = () => {
   }, []);
 
   const startPomodoro = () => {
-    setIsActive(true);
-    play();
+    axios
+      .post(`${baseUrl}/pomodoro/start`, { withCredentials: true })
+      .then((response) => {
+        if (response.status === 200) {
+          setIsActive(true);
+          play();
+
+          //start timer
+          const id = setInterval(() => {
+            setDuration((prevDuration) => {
+              if (prevDuration <= 1) {
+                clearInterval(id);
+                setIsActive(false);
+                stop();
+                return 0;
+              }
+              return prevDuration - 1;
+            });
+          }, 1000);
+          setTimerId(id);
+        }
+      })
+      .catch((error) => {
+        toast.error(`Failed to start pomodoro: ${error.message}`, {
+          theme: "dark",
+          autoClose: 3000,
+        });
+      });
   };
 
   const stopPomodoro = () => {
-    setIsActive(false);
-    stop();
+    axios
+      .post(`${baseUrl}/pomodoro/stop`, { withCredentials: true })
+      .then((response) => {
+        if (response.status === 200) {
+          if (timerId) {
+            clearInterval(timerId);
+            setTimerId(null);
+          }
+          setIsActive(false);
+          stop();
+        }
+      })
+      .catch((error) => {
+        toast.error(`Failed to stop pomodoro: ${error.message}`, {
+          theme: "dark",
+          autoClose: 3000,
+        });
+      });
+  };
+
+  const resetPomodoro = () => {
+    axios
+      .post(`${baseUrl}/pomodoro/reset`, { withCredentials: true })
+      .then((response) => {
+        if (response.status === 200) {
+          if (timerId) {
+            clearInterval(timerId);
+            setTimerId(null);
+          }
+          setIsActive(false);
+          setDuration(response.data.duration);
+        }
+      })
+      .catch((error) => {
+        toast.error(`Failed to reset pomodoro: ${error.message}`, {
+          theme: "dark",
+          autoClose: 3000,
+        });
+      });
   };
 
   //format time
@@ -67,7 +131,10 @@ const PomoContent = () => {
         <div className="text-center flex justify-center items-center space-x-2">
           <span className="text-white">#1</span>
           <a className="cursor-pointer ">
-            <GrPowerReset className="text-neutral-300" />
+            <GrPowerReset
+              className="text-neutral-300"
+              onClick={resetPomodoro}
+            />
           </a>
         </div>
 
