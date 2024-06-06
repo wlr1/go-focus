@@ -8,7 +8,12 @@ import { RiSettings4Fill } from "react-icons/ri";
 import { IoLogOutSharp, IoStatsChartSharp } from "react-icons/io5";
 import SettingsMenu from "./Settings/SettingsMenu";
 
-const Header = () => {
+interface HeaderProps {
+  initialDuration: number;
+  onSave: (newDuration: number) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ initialDuration, onSave }) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -194,7 +199,13 @@ const Header = () => {
               onUpdateAvatar={onUpdateAvatar}
             />
           )}
-          {isSettingsOpen && <SettingsMenu onClose={closeSettings} />}
+          {isSettingsOpen && (
+            <SettingsMenu
+              onClose={closeSettings}
+              onSave={onSave}
+              initialDuration={initialDuration}
+            />
+          )}
         </nav>
       </div>
     </header>

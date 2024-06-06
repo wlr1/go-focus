@@ -8,8 +8,12 @@ import buttonSfx from "../../../sounds/button.mp3";
 
 const baseUrl = "http://localhost:8000";
 
-const PomoContent = () => {
-  const [duration, setDuration] = useState<number>(25 * 60);
+interface PomoProps {
+  duration: number;
+}
+
+const PomoContent: React.FC<PomoProps> = ({ duration }) => {
+  const [currentDuration, setCurrentDuration] = useState<number>(duration);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
@@ -17,21 +21,10 @@ const PomoContent = () => {
   const [stop] = useSound(buttonSfx, { volume: 0.1 });
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/pomodoro/get-duration`, { withCredentials: true })
-      .then((response) => {
-        if (response.status === 200) {
-          setDuration(response.data.duration);
-        }
-      })
-      .catch((error) => {
-        toast.error(`Failed to fetch pomodoro duration: ${error.message}`, {
-          theme: "dark",
-          autoClose: 3000,
-        });
-      });
-  }, []);
+    setCurrentDuration(duration);
+  }, [duration]);
 
+  //start timer
   const startPomodoro = () => {
     axios
       .post(`${baseUrl}/pomodoro/start`, { withCredentials: true })
@@ -42,7 +35,7 @@ const PomoContent = () => {
 
           //start timer
           const id = setInterval(() => {
-            setDuration((prevDuration) => {
+            setCurrentDuration((prevDuration) => {
               if (prevDuration <= 1) {
                 clearInterval(id);
                 setIsActive(false);
@@ -63,6 +56,7 @@ const PomoContent = () => {
       });
   };
 
+  //stop timer
   const stopPomodoro = () => {
     axios
       .post(`${baseUrl}/pomodoro/stop`, { withCredentials: true })
@@ -84,6 +78,7 @@ const PomoContent = () => {
       });
   };
 
+  //reset timer
   const resetPomodoro = () => {
     axios
       .post(`${baseUrl}/pomodoro/reset`, { withCredentials: true })
@@ -94,7 +89,7 @@ const PomoContent = () => {
             setTimerId(null);
           }
           setIsActive(false);
-          setDuration(response.data.duration);
+          setCurrentDuration(response.data.duration);
         }
       })
       .catch((error) => {
@@ -140,7 +135,7 @@ const PomoContent = () => {
 
         <div className="text-center">
           <span className="font-bold text-[12vh] text-gray-200">
-            {formatTime(duration)}
+            {formatTime(currentDuration)}
           </span>
         </div>
         <div className="text-center mt-6">

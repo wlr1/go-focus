@@ -5,12 +5,19 @@ import { toast } from "react-toastify";
 
 interface SettingsMenuProps {
   onClose: () => void;
+  initialDuration: number;
+  onSave: (newDuration: number) => void;
 }
 
 const baseUrl = "http://localhost:8000";
 
-const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
-  const [pomodoroDuration, setPomodoroDuration] = useState<number>(25);
+const SettingsMenu: React.FC<SettingsMenuProps> = ({
+  onClose,
+  initialDuration,
+  onSave,
+}) => {
+  const [pomodoroDuration, setPomodoroDuration] =
+    useState<number>(initialDuration);
 
   const saveSettings = () => {
     axios
@@ -20,6 +27,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
       .then((response) => {
         if (response.status === 200) {
           toast.success("Settings saved successfully");
+          onSave(pomodoroDuration);
         }
       })
       .catch((error) => {
@@ -44,10 +52,10 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
         <h2 className="text-md text-gray-400">Timer</h2>
       </div>
       <h2 className="text-md font-bold mt-2 text-left">Time (Minutes)</h2>
-      <div className="grid grid-cols-3 space-x-3 text-left">
+      <div className="grid grid-cols-3  text-left">
         <div className="">
           <label className="">
-            <h1 className="mb-1 text-gray-300">Pomodoro</h1>
+            <h1 className="mb-1 text-gray-300 mr-1">Pomodoro</h1>
           </label>
           <input
             type="number"
@@ -60,7 +68,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
         </div>
         <div>
           <label>
-            <h1 className="mb-1 text-gray-300">Short Break</h1>
+            <h1 className="mb-1 text-gray-300 mr-1">Short Break</h1>
           </label>
           <input
             type="number"
@@ -71,7 +79,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
         </div>
         <div>
           <label>
-            <h1 className="mb-1 text-gray-300">Long Break</h1>
+            <h1 className="mb-1 text-gray-300 ml-1">Long Break</h1>
           </label>
           <input
             type="number"
@@ -80,13 +88,15 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onClose }) => {
             className="w-16 text-black  rounded-lg p-1 bg-gray-300 focus:outline-none focus:shadow-outline shadow-inner shadow-black"
           />
         </div>
+
         <button
           onClick={saveSettings}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200"
+          className="mt-4 py-2  bg-blue-500 text-white  rounded-md hover:bg-blue-700 transition-all duration-200"
         >
           Save
         </button>
       </div>
+      <hr className="border-b border-gray-400 my-8 mx-auto"></hr>
     </div>
   );
 };
