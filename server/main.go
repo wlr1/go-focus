@@ -51,6 +51,7 @@ func main() {
 	ws := r.Group("/ws")
 	{
 		ws.Use(middleware.RequireAuth)
+
 		ws.GET("/update-username", controllers.UpdateUsernameWebsocket)
 
 	}
@@ -58,8 +59,10 @@ func main() {
 	pomodoro := r.Group("/pomodoro")
 	{
 		pomodoro.Use(middleware.RequireAuth)
-		pomodoro.POST("/set-duration", controllers.SetPomodoroDuration)
+
 		pomodoro.GET("/get-duration", controllers.GetPomodoroDuration)
+
+		pomodoro.POST("/set-duration", controllers.SetPomodoroDuration)
 		pomodoro.POST("/start", controllers.StartPomodoro)
 		pomodoro.POST("/stop", controllers.StopPomodoro)
 		pomodoro.POST("/reset", controllers.ResetPomodoro)

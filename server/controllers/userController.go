@@ -46,6 +46,10 @@ func saveFile(filePath string, reader io.Reader) error {
 	return nil
 }
 
+//===========================================================
+//authentication
+//===========================================================
+
 func SignUp(c *gin.Context) {
 	//get the email/password off req body
 	var body struct {
@@ -157,6 +161,10 @@ func Logout(c *gin.Context) {
 	})
 }
 
+//===========================================================
+// User Info
+//===========================================================
+
 func UpdateUsernameWebsocket(c *gin.Context) {
 	// Check origin error
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
@@ -222,91 +230,6 @@ func UpdateUsernameWebsocket(c *gin.Context) {
 	}
 }
 
-//func UserAvatarWebsocket(c *gin.Context) {
-//	// Check origin error
-//	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-//
-//	// Upgrade HTTP connection to WebSocket
-//	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-//	if err != nil {
-//		log.Println("Failed to set up WebSocket connection:", err)
-//		return
-//	}
-//
-//	// Read incoming message from client
-//	_, msg, err := conn.ReadMessage()
-//	if err != nil {
-//		log.Println("Failed to read message from client:", err)
-//		return
-//	}
-//
-//	// Get the authenticated user from context using type assertion
-//	user, exists := c.Get("user")
-//	if !exists {
-//		log.Println("Error: User not found in context")
-//		conn.WriteMessage(websocket.TextMessage, []byte("Unauthorized"))
-//		return
-//	}
-//
-//	log.Printf("Type of user in context: %T\n", user)
-//
-//	// Type assert the user to models.User
-//	currentUser, ok := user.(models.User)
-//	if !ok {
-//		log.Println("Error: Unexpected user type in context")
-//		conn.WriteMessage(websocket.TextMessage, []byte("Internal server error"))
-//		return
-//	}
-//
-//	// Parse the message JSON to get the file name
-//	var filename struct {
-//		Filename string `json:"filename"`
-//	}
-//
-//	if err := json.Unmarshal(msg, &filename); err != nil {
-//		log.Println("Failed to parse filename from message:", err)
-//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to parse filename"))
-//		return
-//	}
-//
-//	// Receive file from client
-//	_, file, err := conn.NextReader()
-//	if err != nil {
-//		log.Println("Failed to receive file from client:", err)
-//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to receive file"))
-//		return
-//	}
-//
-//	// Save the file to a location
-//	filePath := filepath.Join("uploads", currentUser.Username+"_"+filename.Filename)
-//	if err := saveFile(filePath, file); err != nil {
-//		log.Println("Failed to save file:", err)
-//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to save file"))
-//		return
-//	}
-//
-//	// Update the user's avatar in the database
-//	currentUser.Avatar = filePath
-//	if err := initializers.DB.Save(&currentUser).Error; err != nil {
-//		log.Println("Failed to update user in database:", err)
-//		conn.WriteMessage(websocket.TextMessage, []byte("Failed to update avatar"))
-//		return
-//	}
-//
-//	// Send a response back to the client
-//	if err := conn.WriteMessage(websocket.TextMessage, []byte("Avatar updated successfully")); err != nil {
-//		log.Println("Failed to write message to client:", err)
-//		return
-//	}
-//
-//	// Set cache headers
-//	c.Header("Cache-Control", "no-cache, no-store, must-revalidate")
-//	c.Header("Pragma", "no-cache")
-//	c.Header("Expires", "0")
-//
-//	defer conn.Close()
-//}
-
 func UserAvatar(c *gin.Context) {
 	//get the authenticated user from the context
 	user, _ := c.Get("user")
@@ -347,40 +270,6 @@ func UserAvatar(c *gin.Context) {
 		"avatar_url": avatarURL,
 	})
 }
-
-//func UpdateUsername(c *gin.Context) {
-//	//get the user from context
-//	user, _ := c.Get("user")
-//	currentUser := user.(models.User)
-//
-//	//get the new username from the req body
-//
-//	var body struct {
-//		Username string
-//	}
-//
-//	if c.Bind(&body) != nil {
-//		c.JSON(http.StatusBadRequest, gin.H{
-//			"error": "Failed to read body",
-//		})
-//		return
-//	}
-//
-//	//update the username in the db
-//
-//	currentUser.Username = body.Username
-//	result := initializers.DB.Save(&currentUser)
-//
-//	if result.Error != nil {
-//		c.JSON(http.StatusBadRequest, gin.H{
-//			"error": "Failed to update username",
-//		})
-//		return
-//	}
-//
-//	//respond with success
-//	c.JSON(http.StatusOK, gin.H{})
-//}
 
 func UpdatePassword(c *gin.Context) {
 	//get the authenticated user from the context
@@ -446,7 +335,9 @@ func DeleteUser(c *gin.Context) {
 	})
 }
 
+//===========================================================
 //POMODORO
+//===========================================================
 
 //update duration
 
@@ -522,14 +413,15 @@ func StartPomodoro(c *gin.Context) {
 		return
 	}
 
-	//update status to "running" and set the start time
+	//update status to "running" and set the start time, and set PomodoroType=pomodoro
 
 	startTime := time.Now()
+	pomodoro.PomodoroType = "pomodoro"
 	pomodoro.Status = "running"
 	pomodoro.StartTime = &startTime
 	initializers.DB.Save(&pomodoro)
 
-	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro started successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro started successfully", "startTime": startTime})
 }
 
 //stop
@@ -595,3 +487,7 @@ func ResetPomodoro(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Pomodoro reset successfully", "duration": newPomodoro.Duration})
 }
+
+//===========================================================
+// Short break pomodoro
+//===========================================================
