@@ -10,19 +10,30 @@ const PomoPage = () => {
   const [pomodoroDuration, setPomodoroDuration] = useState<number>(25 * 60);
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}/pomodoro/get-duration`, { withCredentials: true })
-      .then((response) => {
+    const fetchPomodoroStatus = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/pomodoro/get-duration`, {
+          withCredentials: true,
+        });
         if (response.status === 200) {
-          setPomodoroDuration(response.data.duration);
+          const { duration, status, startTime } = response.data;
+          if (status === "running" && startTime) {
+            const elapsedTime =
+              (Date.now() - new Date(startTime).getTime()) / 1000;
+            setPomodoroDuration(duration - elapsedTime);
+          } else {
+            setPomodoroDuration(duration);
+          }
         }
-      })
-      .catch((error) => {
-        toast.error(`Failed to fetch pomodoro duration: ${error.message}`, {
+      } catch (error) {
+        toast.error(`Failed to fetch pomodoro duration: ${error}`, {
           theme: "dark",
           autoClose: 3000,
         });
-      });
+      }
+    };
+
+    fetchPomodoroStatus();
   }, []);
 
   return (

@@ -39,7 +39,7 @@ const PomoContent: React.FC<PomoProps> = ({ duration }) => {
               if (prevDuration <= 1) {
                 clearInterval(id);
                 setIsActive(false);
-                stop();
+                play();
                 return 0;
               }
               return prevDuration - 1;
@@ -112,16 +112,48 @@ const PomoContent: React.FC<PomoProps> = ({ duration }) => {
   return (
     <div className="px-4">
       <div className="max-w-[600px] mx-auto bg-darkpal rounded-xl shadow-custom  shadow-gray-700 p-8 ">
-        <div className="grid grid-cols-3 text-center text-md mb-6">
-          <button className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black">
+        <div className="mb-6">
+          {/* <button className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black">
             Pomodoro
-          </button>
-          <button className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black">
-            Short Break
-          </button>
-          <button className="border border-gray-700 bg-gray-700 text-white rounded-md px-4 py-2 m-2 transition duration-500 ease select-none hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black">
-            Long Break
-          </button>
+          </button> */}
+          <form className="flex justify-between w-[500px] min-h-[69px] m-auto ">
+            <input
+              type="radio"
+              id="pomo"
+              name="mode"
+              className="opacity-0 fixed w-0"
+            />
+            <label
+              htmlFor="pomo"
+              className=" w-[189px] border  border-gray-700 bg-gray-700 text-white text-center text-lg rounded-md px-4 py-2 m-2 transition duration-500 ease select-none cursor-pointer hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black"
+            >
+              Pomodoro
+            </label>
+            <input
+              type="radio"
+              id="short"
+              name="mode"
+              className="opacity-0 fixed w-0"
+            />
+            <label
+              htmlFor="short"
+              className="border w-[189px] border-gray-700 bg-gray-700 text-white text-center text-lg rounded-md px-4 py-2 m-2 transition duration-500 ease select-none cursor-pointer hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black"
+            >
+              Short Break
+            </label>
+            <input
+              type="radio"
+              id="long"
+              name="mode"
+              className="opacity-0 fixed w-0"
+            />
+            <label
+              htmlFor="long"
+              className="border w-[189px] border-gray-700 bg-gray-700 text-white text-center text-lg  rounded-md px-4 py-2 m-2 transition duration-500 ease select-none cursor-pointer hover:bg-gray-800 focus:outline-none focus:shadow-outline focus:bg-black"
+            >
+              Long Break
+            </label>
+          </form>
         </div>
         <div className="text-center flex justify-center items-center space-x-2">
           <span className="text-white">#1</span>
