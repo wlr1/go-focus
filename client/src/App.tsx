@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import StartPage from "./components/StartPage/StartPage";
 import PomoPage from "./components/PomoPage/PomoPage";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -14,7 +15,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/pomo",
-    element: <PomoPage />,
+    element: (
+      <ProtectedRoute>
+        <PomoPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/login",
